@@ -35,4 +35,18 @@ return [
         ],
     ],
 
+    'n8n' => [
+        'enabled' => env('N8N_ENABLED', false),
+        'webhook_url' => env('N8N_WEBHOOK_URL'),
+        'webhook_token' => env('N8N_WEBHOOK_TOKEN'),
+        'timeout' => (int) env('N8N_TIMEOUT', 5),
+    ],
+
+    'hermes' => [
+        'enabled' => env('HERMES_ENABLED', false),
+        'base_url' => env('HERMES_BASE_URL'),
+        'api_token' => env('HERMES_API_TOKEN'),
+        'timeout' => (int) env('HERMES_TIMEOUT', 30),
+    ],
+
 ];

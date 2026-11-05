@@ -279,6 +279,33 @@
 
                                 </div>
 
+                                <div class="bg-light rounded-4 p-3 mb-3">
+
+                                    <div class="form-check">
+
+                                        <input type="checkbox" name="ai_processing_consent" value="1"
+                                            id="ai_processing_consent" class="form-check-input"
+                                            @checked(old('ai_processing_consent'))>
+
+                                        <label for="ai_processing_consent" class="form-check-label fw-semibold">
+
+                                            Saya bersedia memberikan izin pemrosesan cerita konsultasi
+                                            menggunakan bantuan AI untuk membantu konselor menyiapkan respons.
+
+                                        </label>
+
+                                    </div>
+
+                                    <p class="text-secondary small mb-0 mt-2">
+
+                                        Persetujuan ini opsional dan tidak memengaruhi pengajuan konsultasi.
+                                        Cerita hanya boleh dikirim ke layanan AI setelah pengelola
+                                        menjelaskan penyedia layanan dan pemrosesan datanya.
+
+                                    </p>
+
+                                </div>
+
 
                                 <div class="form-check mb-4">
 

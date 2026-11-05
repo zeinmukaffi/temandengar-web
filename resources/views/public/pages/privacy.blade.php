@@ -28,7 +28,6 @@
 
     </section>
 
-
     <section class="section-padding">
 
         <div class="container">
@@ -145,9 +144,39 @@
 
                         </p>
 
+                        <h5 class="fw-bold mt-4">
+                            Pemrosesan Menggunakan AI
+                        </h5>
+
+                        <p class="text-muted-custom small mb-0">
+
+                            TemanDengar dapat menyediakan fitur bantuan AI
+                            untuk membantu konselor menyusun draft respons
+                            dan saran pertanyaan.
+
+                        </p>
+
+                        <p class="text-muted-custom small mb-0">
+
+                            Pemrosesan cerita menggunakan AI hanya dapat dilakukan
+                            apabila mahasiswa memberikan persetujuan secara terpisah.
+                            Persetujuan tersebut bersifat opsional dan tidak
+                            memengaruhi akses terhadap layanan konsultasi.
+
+                        </p>
+
+                        <p class="text-muted-custom small mb-0">
+
+                            Sebelum fitur diaktifkan, pengelola akan menjelaskan
+                            penyedia layanan AI, tujuan pemrosesan, dan informasi
+                            terkait penggunaan data.
+
+                        </p>
+
                     </div>
 
                 </div>
+
 
             </div>
 

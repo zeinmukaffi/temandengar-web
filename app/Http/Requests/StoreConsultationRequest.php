@@ -64,6 +64,10 @@ class StoreConsultationRequest extends FormRequest
             'consent' => [
                 'accepted',
             ],
+            'ai_processing_consent' => [
+                'sometimes',
+                'boolean',
+            ],
         ];
     }
 
