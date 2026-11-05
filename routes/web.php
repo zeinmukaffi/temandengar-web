@@ -14,6 +14,9 @@ use App\Http\Controllers\Website\PageController;
 use App\Http\Controllers\Website\ResourceController as PublicResourceController;
 use App\Http\Controllers\Website\TestimonialController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
+use App\Http\Controllers\Website\FeedbackController as PublicFeedbackController;
+// use App\Http\Controllers\Admin\PerformanceController;
 
 // ========================================
 // PUBLIC WEBSITE
@@ -64,6 +67,24 @@ Route::get('/kebijakan-privasi', [
     PageController::class,
     'privacy'
 ])->name('public.privacy');
+
+// ========================================
+// PUBLIC CONSULTATION FEEDBACK
+// ========================================
+
+Route::get('/feedback/{consultation}', [
+    PublicFeedbackController::class,
+    'create'
+])
+    ->middleware('signed')
+    ->name('public.feedback.create');
+
+Route::post('/feedback/{consultation}', [
+    PublicFeedbackController::class,
+    'store'
+])
+    ->middleware('signed')
+    ->name('public.feedback.store');
 
 
 // ========================================
@@ -256,4 +277,19 @@ Route::middleware('auth')->group(function () {
         PerformanceController::class,
         'index'
     ])->name('admin.performance.index');
+
+    // ========================================
+    // FEEDBACK MANAGEMENT
+    // ========================================
+
+    Route::get('/dashboard/feedback', [
+        AdminFeedbackController::class,
+        'index'
+    ])->name('admin.feedback.index');
+
+    Route::patch('/dashboard/feedback/{feedback}/publication', [
+        AdminFeedbackController::class,
+        'updatePublication'
+    ])->name('admin.feedback.update-publication');
+    
 });

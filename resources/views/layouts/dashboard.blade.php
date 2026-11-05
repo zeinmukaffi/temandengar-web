@@ -79,6 +79,13 @@
                         Materi Pendukung
                     </a>
 
+                    <a href="{{ route('admin.feedback.index') }}" class="nav-link text-dark">
+
+                        <i class="bi bi-star me-2"></i>
+                        Feedback & Rating
+
+                    </a>
+
                 </div>
 
             </aside>

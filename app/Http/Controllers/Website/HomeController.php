@@ -51,9 +51,9 @@ class HomeController extends Controller
         $testimonials = ConsultationFeedback::query()
             ->where('is_published', true)
             ->where('consent_to_publish', true)
+            ->whereNotNull('published_at')
             ->whereNotNull('comment')
             ->where('comment', '!=', '')
-            ->whereNotNull('published_at')
             ->latest('published_at')
             ->limit(3)
             ->get();
