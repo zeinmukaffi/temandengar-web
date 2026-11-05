@@ -57,20 +57,31 @@ class ConsultationController extends Controller
         $validated = $request->validate([
             'status' => [
                 'required',
-                Rule::in(['reviewing', 'rejected', 'referred']),
+                'in:reviewing,rejected,referred',
             ],
         ]);
 
-        if (!in_array($consultationRequest->status, ['pending', 'reviewing'])) {
+        $allowedTransitions = [
+            'pending' => ['reviewing', 'rejected', 'referred'],
+            'reviewing' => ['rejected', 'referred'],
+        ];
+
+        $currentStatus = $consultationRequest->status;
+        $newStatus = $validated['status'];
+
+        if (
+            !in_array(
+                $newStatus,
+                $allowedTransitions[$currentStatus] ?? [],
+                true
+            )
+        ) {
             return back()->withErrors([
-                'status' => 'Permintaan ini tidak dapat diubah melalui menu ini.',
+                'status' => 'Perubahan status tidak diperbolehkan.',
             ]);
         }
 
-        $oldStatus = $consultationRequest->status;
-        $newStatus = $validated['status'];
-
-        DB::transaction(function () use ($consultationRequest, $oldStatus, $newStatus) {
+        DB::transaction(function () use ($consultationRequest, $currentStatus, $newStatus) {
 
             $consultationRequest->update([
                 'status' => $newStatus,
@@ -80,14 +91,14 @@ class ConsultationController extends Controller
                 'user_id' => auth()->id(),
                 'request_id' => $consultationRequest->id,
                 'action' => 'request_status_updated',
-                'description' => "Status diubah dari {$oldStatus} menjadi {$newStatus}.",
+                'description' => "Status diubah dari {$currentStatus} menjadi {$newStatus}.",
             ]);
 
         });
 
         return back()->with(
             'success',
-            'Status permintaan konsultasi berhasil diperbarui.'
+            'Status permintaan berhasil diperbarui.'
         );
     }
 

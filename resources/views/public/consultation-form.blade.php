@@ -237,6 +237,24 @@
 
                                 <div class="form-check">
 
+                                    <div class="bg-light rounded-3 p-3 mb-3">
+
+                                        <h6 class="fw-semibold">
+                                            <i class="bi bi-shield-lock me-1"></i>
+                                            Privasi dan Kerahasiaan
+                                        </h6>
+
+                                        <p class="text-secondary small mb-0">
+
+                                            Informasi yang kamu berikan akan digunakan untuk
+                                            mengelola permintaan konsultasi dan menghubungimu
+                                            terkait layanan TemanDengar. Jangan cantumkan
+                                            informasi pribadi yang tidak diperlukan.
+
+                                        </p>
+
+                                    </div>
+
                                     <input type="checkbox" name="consent" value="1" id="consent"
                                         class="form-check-input @error('consent') is-invalid @enderror"
                                         @checked(old('consent'))>

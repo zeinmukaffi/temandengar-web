@@ -22,3 +22,43 @@ body {
 .text-primary {
     color: var(--primary) !important;
 }
+
+/* Dashboard Sidebar */
+
+.sidebar {
+    min-height: calc(100vh - 65px);
+}
+
+/* Dashboard Main */
+
+.dashboard-main {
+    min-width: 0;
+}
+
+/* Responsive */
+
+@media (max-width: 767.98px) {
+
+    .sidebar {
+        min-height: auto;
+        border-right: 0 !important;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .dashboard-main {
+        padding: 1rem !important;
+    }
+
+    .dashboard-main h3 {
+        font-size: 1.35rem;
+    }
+
+    .card-body {
+        padding: 1.25rem !important;
+    }
+
+    .table {
+        white-space: nowrap;
+    }
+
+}

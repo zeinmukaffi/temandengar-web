@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Website;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreConsultationRequest;
 use App\Models\ConsultationRequest;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class ConsultationRequestController extends Controller
 {
@@ -16,64 +17,11 @@ class ConsultationRequestController extends Controller
         return view('public.consultation-form');
     }
 
-    public function store(Request $request): RedirectResponse
-    {
-        $validated = $request->validate([
-            'alias' => ['required', 'string', 'max:100'],
+    public function store(
+        StoreConsultationRequest $request
+    ): RedirectResponse {
 
-            'email' => [
-                'nullable',
-                'required_without:phone',
-                'email',
-                'max:150',
-            ],
-
-            'phone' => [
-                'nullable',
-                'required_without:email',
-                'string',
-                'max:20',
-            ],
-
-            'topic' => [
-                'required',
-                'in:academic,personal,social,organization,other',
-            ],
-
-            'description' => [
-                'required',
-                'string',
-                'min:10',
-                'max:3000',
-            ],
-
-            'preferred_method' => [
-                'required',
-                'in:online,offline',
-            ],
-
-            'preferred_date' => [
-                'nullable',
-                'date',
-                'after_or_equal:today',
-            ],
-
-            'preferred_time' => [
-                'nullable',
-                'string',
-                'max:50',
-            ],
-
-            'consent' => ['accepted'],
-        ], [
-            'alias.required' => 'Nama panggilan wajib diisi.',
-            'email.required_without' => 'Isi email atau nomor WhatsApp.',
-            'phone.required_without' => 'Isi nomor WhatsApp atau email.',
-            'topic.required' => 'Pilih topik konsultasi.',
-            'description.required' => 'Ceritakan kebutuhan konsultasimu.',
-            'consent.accepted' => 'Persetujuan penggunaan data wajib diberikan.',
-            'preferred_date.after_or_equal' => 'Tanggal tidak boleh kurang dari hari ini.',
-        ]);
+        $validated = $request->validated();
 
         $consultationRequest = ConsultationRequest::create([
             'ticket_number' => $this->generateTicketNumber(),
