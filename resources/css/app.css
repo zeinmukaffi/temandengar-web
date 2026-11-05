@@ -583,3 +583,43 @@ section {
     }
 
 }
+
+/* ===================================
+   PERFORMANCE ANALYTICS
+=================================== */
+
+.performance-chart-wrapper {
+    position: relative;
+    width: 100%;
+    height: 340px;
+}
+
+.performance-doughnut-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    height: 310px;
+    margin: 20px auto 0;
+}
+
+.chart-empty {
+    min-height: 310px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--td-muted);
+    text-align: center;
+}
+
+@media (max-width: 767.98px) {
+
+    .performance-chart-wrapper {
+        height: 280px;
+    }
+
+    .performance-doughnut-wrapper {
+        height: 280px;
+    }
+
+}

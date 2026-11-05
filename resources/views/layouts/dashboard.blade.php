@@ -55,10 +55,13 @@
                     </a>
 
                     <a href="{{ route('admin.pipeline.index') }}" class="nav-link text-dark">
-
                         <i class="bi bi-kanban me-2"></i>
                         Pipeline Kasus
+                    </a>
 
+                    <a href="{{ route('admin.performance.index') }}" class="nav-link text-dark">
+                        <i class="bi bi-bar-chart-line me-2"></i>
+                        Statistik Performa
                     </a>
 
                     <a href="{{ route('admin.consultations.index') }}" class="nav-link text-dark">

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\ConsultationController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\PerformanceController;
 use App\Http\Controllers\Admin\PipelineController;
 use App\Http\Controllers\Admin\ResourceController as AdminResourceController;
 use App\Http\Controllers\Admin\ScheduleController;
@@ -246,4 +247,13 @@ Route::middleware('auth')->group(function () {
         PipelineController::class,
         'index'
     ])->name('admin.pipeline.index');
+
+    // ========================================
+    // PERFORMANCE ANALYTICS
+    // ========================================
+
+    Route::get('/dashboard/statistik', [
+        PerformanceController::class,
+        'index'
+    ])->name('admin.performance.index');
 });
