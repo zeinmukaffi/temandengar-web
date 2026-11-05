@@ -54,6 +54,13 @@
                         Dashboard
                     </a>
 
+                    <a href="{{ route('admin.pipeline.index') }}" class="nav-link text-dark">
+
+                        <i class="bi bi-kanban me-2"></i>
+                        Pipeline Kasus
+
+                    </a>
+
                     <a href="{{ route('admin.consultations.index') }}" class="nav-link text-dark">
                         <i class="bi bi-chat-left-text me-2"></i>
                         Permintaan Konsultasi

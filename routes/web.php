@@ -2,16 +2,17 @@
 
 use App\Http\Controllers\Admin\ConsultationController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\PipelineController;
 use App\Http\Controllers\Admin\ResourceController as AdminResourceController;
 use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Website\ConsultationRequestController;
-use App\Http\Controllers\Website\HomeController;
-use App\Http\Controllers\Website\ResourceController as PublicResourceController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Website\PageController;
 use App\Http\Controllers\Website\CounselorController as PublicCounselorController;
+use App\Http\Controllers\Website\HomeController;
+use App\Http\Controllers\Website\PageController;
+use App\Http\Controllers\Website\ResourceController as PublicResourceController;
 use App\Http\Controllers\Website\TestimonialController;
+use Illuminate\Support\Facades\Route;
 
 // ========================================
 // PUBLIC WEBSITE
@@ -208,8 +209,8 @@ Route::middleware('auth')->group(function () {
     ])->name('admin.schedules.cancel');
 
     // ========================================
-// ADMIN RESOURCE MANAGEMENT
-// ========================================
+    // ADMIN RESOURCE MANAGEMENT
+    // ========================================
 
     Route::get('/dashboard/materi', [
         AdminResourceController::class,
@@ -240,4 +241,9 @@ Route::middleware('auth')->group(function () {
         AdminResourceController::class,
         'destroy'
     ])->name('admin.resources.destroy');
+
+    Route::get('/dashboard/pipeline', [
+        PipelineController::class,
+        'index'
+    ])->name('admin.pipeline.index');
 });
