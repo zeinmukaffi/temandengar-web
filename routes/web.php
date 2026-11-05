@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\ConsultationController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Website\ConsultationRequestController;
@@ -57,8 +58,10 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
 
-    Route::view('/dashboard', 'admin.dashboard')
-        ->name('admin.dashboard');
+    Route::get('/dashboard', [
+        DashboardController::class,
+        'index'
+    ])->name('admin.dashboard');
 
     Route::post('/logout', [
         LoginController::class,

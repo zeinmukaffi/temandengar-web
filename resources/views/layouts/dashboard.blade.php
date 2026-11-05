@@ -60,10 +60,13 @@
                     </a>
 
                     <a href="{{ route('admin.schedules.index') }}" class="nav-link text-dark">
-
                         <i class="bi bi-calendar-event me-2"></i>
                         Jadwal Konsultasi
+                    </a>
 
+                    <a href="#" class="nav-link text-dark">
+                        <i class="bi bi-book me-2"></i>
+                        Materi Pendukung
                     </a>
 
                 </div>
