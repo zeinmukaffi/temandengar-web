@@ -25,29 +25,40 @@ class ResourceController extends Controller
         ];
     }
 
-    public function index(Request $request): View
+    public function index(\Illuminate\Http\Request $request): View
     {
         $resources = Resource::query()
+            ->where('is_published', true)
             ->when($request->filled('search'), function ($query) use ($request) {
+
                 $search = $request->search;
 
                 $query->where(function ($q) use ($search) {
                     $q->where('title', 'like', "%{$search}%")
-                        ->orWhere('category', 'like', "%{$search}%");
+                        ->orWhere('description', 'like', "%{$search}%");
                 });
+
             })
-            ->when($request->filled('status'), function ($query) use ($request) {
-                if ($request->status === 'published') {
-                    $query->where('is_published', true);
-                } elseif ($request->status === 'draft') {
-                    $query->where('is_published', false);
-                }
+            ->when($request->filled('category'), function ($query) use ($request) {
+                $query->where('category', $request->category);
             })
             ->latest()
-            ->paginate(10)
+            ->paginate(9)
             ->withQueryString();
 
-        return view('admin.resources.index', compact('resources'));
+        $categories = [
+            'academic' => 'Akademik',
+            'personal' => 'Pengembangan Diri',
+            'social' => 'Sosial dan Pertemanan',
+            'organization' => 'Organisasi',
+            'professional_support' => 'Bantuan Profesional',
+            'general' => 'Umum',
+        ];
+
+        return view('public.resources.index', compact(
+            'resources',
+            'categories'
+        ));
     }
 
     public function create(): View

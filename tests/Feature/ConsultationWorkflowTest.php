@@ -3,9 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use App\Models\Consultation;
 use App\Models\ConsultationRequest;
-use App\Models\ActivityLog;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

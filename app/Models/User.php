@@ -25,6 +25,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'headline',
+        'education',
+        'bio',
+        'specialties',
+        'photo_path',
+        'is_public_profile',
     ];
 
     /**
@@ -47,6 +53,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'specialties' => 'array',
+            'is_public_profile' => 'boolean',
         ];
     }
 

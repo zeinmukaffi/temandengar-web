@@ -1,56 +1,58 @@
-@extends('layouts.dashboard')
+@extends('layouts.public')
 
 @section('title', 'Materi Pendukung')
 
 @section('content')
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <section class="hero-section">
 
-        <div>
+        <div class="container text-center">
 
-            <h3 class="fw-bold">Materi Pendukung</h3>
+            <span class="section-label mb-3">
+                Knowledge Corner
+            </span>
 
-            <p class="text-secondary mb-0">
-                Kelola artikel dan informasi pendukung mahasiswa.
+            <h1 class="hero-title mb-3">
+                Wawasan untuk
+                <span>bertumbuh bersama.</span>
+            </h1>
+
+            <p class="hero-description mx-auto">
+                Temukan artikel dan informasi yang dapat membantu
+                perjalanan kehidupan perkuliahanmu.
             </p>
 
         </div>
 
-        <a href="{{ route('admin.resources.create') }}" class="btn btn-primary">
+    </section>
 
-            <i class="bi bi-plus-lg me-1"></i>
-            Tambah Materi
 
-        </a>
+    <section class="section-padding">
 
-    </div>
+        <div class="container">
 
-    <div class="card border-0 shadow-sm rounded-4">
+            <form method="GET" action="{{ route('public.resources.index') }}" class="row g-2 mb-5">
 
-        <div class="card-body p-4">
+                <div class="col-md-7">
 
-            <form method="GET" action="{{ route('admin.resources.index') }}" class="row g-2 mb-4">
-
-                <div class="col-md-6">
-
-                    <input type="text" name="search" value="{{ request('search') }}" class="form-control"
-                        placeholder="Cari judul atau kategori...">
+                    <input type="text" name="search" class="form-control form-control-lg"
+                        value="{{ request('search') }}" placeholder="Cari materi atau artikel...">
 
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
 
-                    <select name="status" class="form-select">
+                    <select name="category" class="form-select form-select-lg">
 
-                        <option value="">Semua Status</option>
+                        <option value="">Semua Kategori</option>
 
-                        <option value="published" @selected(request('status') == 'published')>
-                            Published
-                        </option>
+                        @foreach ($categories as $value => $label)
+                            <option value="{{ $value }}" @selected(request('category') === $value)>
 
-                        <option value="draft" @selected(request('status') == 'draft')>
-                            Draft
-                        </option>
+                                {{ $label }}
+
+                            </option>
+                        @endforeach
 
                     </select>
 
@@ -58,138 +60,97 @@
 
                 <div class="col-md-2">
 
-                    <button class="btn btn-primary w-100">
-                        Filter
+                    <button class="btn btn-primary btn-lg w-100">
+                        Cari
                     </button>
 
                 </div>
 
             </form>
 
-            <div class="table-responsive">
 
-                <table class="table table-hover align-middle">
+            <div class="row g-4">
 
-                    <thead class="table-light">
+                @forelse($resources as $resource)
+                    <div class="col-md-6 col-lg-4" data-reveal>
 
-                        <tr>
-                            <th>Judul</th>
-                            <th>Kategori</th>
-                            <th>Status</th>
-                            <th>Dibuat</th>
-                            <th>Aksi</th>
-                        </tr>
+                        <div class="td-card">
 
-                    </thead>
+                            <div class="td-icon lavender mb-4">
 
-                    <tbody>
+                                <i class="bi bi-journal-richtext"></i>
 
-                        @php
-                            $categoryLabels = [
-                                'academic' => 'Akademik',
-                                'personal' => 'Pengembangan Diri',
-                                'social' => 'Sosial dan Pertemanan',
-                                'organization' => 'Organisasi',
-                                'professional_support' => 'Bantuan Profesional',
-                                'general' => 'Umum',
-                            ];
-                        @endphp
+                            </div>
 
-                        @forelse($resources as $resource)
-                            <tr>
+                            <small class="text-primary fw-semibold">
 
-                                <td>
+                                {{ $categories[$resource->category] ?? $resource->category }}
 
-                                    <div class="fw-semibold">
-                                        {{ $resource->title }}
-                                    </div>
+                            </small>
 
-                                    <small class="text-secondary">
-                                        {{ Str::limit($resource->description, 60) }}
-                                    </small>
+                            <h5 class="fw-bold mt-2">
+                                {{ $resource->title }}
+                            </h5>
 
-                                </td>
+                            <p class="text-muted-custom small">
+                                {{ Str::limit($resource->description, 130) }}
+                            </p>
 
-                                <td>
-                                    {{ $categoryLabels[$resource->category] ?? $resource->category }}
-                                </td>
+                            <small class="text-secondary d-block mb-3">
 
-                                <td>
+                                {{ $resource->created_at->translatedFormat('d F Y') }}
 
-                                    @if ($resource->is_published)
-                                        <span class="badge text-bg-success">
-                                            Published
-                                        </span>
-                                    @else
-                                        <span class="badge text-bg-secondary">
-                                            Draft
-                                        </span>
-                                    @endif
+                            </small>
 
-                                </td>
+                            <a href="{{ route('public.resources.show', $resource) }}"
+                                class="text-primary text-decoration-none fw-semibold small">
 
-                                <td>
-                                    {{ $resource->created_at->format('d M Y') }}
-                                </td>
+                                Baca Selengkapnya
 
-                                <td>
+                                <i class="bi bi-arrow-right ms-1"></i>
 
-                                    <div class="d-flex gap-1">
+                            </a>
 
-                                        <a href="{{ route('admin.resources.edit', $resource) }}"
-                                            class="btn btn-sm btn-outline-primary">
+                        </div>
 
-                                            <i class="bi bi-pencil"></i>
+                    </div>
 
-                                        </a>
+                @empty
 
-                                        <form action="{{ route('admin.resources.destroy', $resource) }}" method="POST"
-                                            onsubmit="return confirm('Yakin ingin menghapus materi ini?')">
+                    <div class="col-12">
 
-                                            @csrf
-                                            @method('DELETE')
+                        <div class="bg-soft rounded-4 text-center p-5">
 
-                                            <button class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-search fs-1 text-secondary"></i>
 
-                                                <i class="bi bi-trash"></i>
+                            <h5 class="fw-bold mt-3">
+                                Materi tidak ditemukan.
+                            </h5>
 
-                                            </button>
+                            <p class="text-muted-custom mb-3">
+                                Coba kata kunci atau kategori lainnya.
+                            </p>
 
-                                        </form>
+                            <a href="{{ route('public.resources.index') }}" class="btn btn-outline-primary">
 
-                                    </div>
+                                Reset Filter
 
-                                </td>
+                            </a>
 
-                            </tr>
+                        </div>
 
-                        @empty
-
-                            <tr>
-
-                                <td colspan="5" class="text-center py-5">
-
-                                    <i class="bi bi-book fs-1 text-secondary"></i>
-
-                                    <p class="text-secondary mt-2">
-                                        Belum ada materi pendukung.
-                                    </p>
-
-                                </td>
-
-                            </tr>
-                        @endforelse
-
-                    </tbody>
-
-                </table>
+                    </div>
+                @endforelse
 
             </div>
 
-            {{ $resources->links() }}
+
+            <div class="mt-5">
+                {{ $resources->links() }}
+            </div>
 
         </div>
 
-    </div>
+    </section>
 
 @endsection
