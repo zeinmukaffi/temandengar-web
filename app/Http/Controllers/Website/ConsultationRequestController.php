@@ -37,6 +37,24 @@ class ConsultationRequestController extends Controller
             'consent_at' => now(),
         ]);
 
+        app(\App\Services\CounselorNotificationService::class)
+            ->notifyCounselors(
+                'new_consultation_request',
+
+                'Pengajuan konsultasi baru',
+
+                'Ada pengajuan baru dengan nomor tiket '
+                . $consultationRequest->ticket_number . '.',
+
+                route(
+                    'admin.consultations.show',
+                    $consultationRequest,
+                    false
+                ),
+
+                'bi-inbox'
+            );
+
         return redirect()
             ->route('consultations.success')
             ->with('ticket_number', $consultationRequest->ticket_number);

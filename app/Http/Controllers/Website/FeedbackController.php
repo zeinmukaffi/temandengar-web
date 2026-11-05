@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Website;
 
 use App\Http\Controllers\Controller;
 use App\Models\Consultation;
-use App\Models\ConsultationFeedback;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -128,6 +127,25 @@ class FeedbackController extends Controller
             'published_at' => null,
 
         ]);
+
+        app(\App\Services\CounselorNotificationService::class)
+            ->notifyCounselors(
+                'feedback_received',
+
+                'Feedback baru diterima',
+
+                'Feedback baru telah diterima untuk konsultasi dengan nomor tiket '
+                . $consultation->consultationRequest->ticket_number
+                . '.',
+
+                route(
+                    'admin.feedback.index',
+                    [],
+                    false
+                ),
+
+                'bi-star'
+            );
 
         return redirect()
             ->route('home')

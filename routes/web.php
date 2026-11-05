@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\ConsultationController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
+use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PerformanceController;
 use App\Http\Controllers\Admin\PipelineController;
 use App\Http\Controllers\Admin\ResourceController as AdminResourceController;
@@ -9,13 +11,12 @@ use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Website\ConsultationRequestController;
 use App\Http\Controllers\Website\CounselorController as PublicCounselorController;
+use App\Http\Controllers\Website\FeedbackController as PublicFeedbackController;
 use App\Http\Controllers\Website\HomeController;
 use App\Http\Controllers\Website\PageController;
 use App\Http\Controllers\Website\ResourceController as PublicResourceController;
 use App\Http\Controllers\Website\TestimonialController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
-use App\Http\Controllers\Website\FeedbackController as PublicFeedbackController;
 // use App\Http\Controllers\Admin\PerformanceController;
 
 // ========================================
@@ -291,5 +292,23 @@ Route::middleware('auth')->group(function () {
         AdminFeedbackController::class,
         'updatePublication'
     ])->name('admin.feedback.update-publication');
-    
+
+    // ========================================
+    // NOTIFICATION CENTER
+    // ========================================
+
+    Route::get('/dashboard/notifikasi', [
+        NotificationController::class,
+        'index'
+    ])->name('admin.notifications.index');
+
+    Route::post('/dashboard/notifikasi/{notification}/read', [
+        NotificationController::class,
+        'markAsRead'
+    ])->name('admin.notifications.read');
+
+    Route::post('/dashboard/notifikasi/read-all', [
+        NotificationController::class,
+        'markAllAsRead'
+    ])->name('admin.notifications.read-all');
 });
