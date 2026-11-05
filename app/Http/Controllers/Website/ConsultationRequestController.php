@@ -33,6 +33,12 @@ class ConsultationRequestController extends Controller
             'preferred_method' => $validated['preferred_method'],
             'preferred_date' => $validated['preferred_date'] ?? null,
             'preferred_time' => $validated['preferred_time'] ?? null,
+            'ai_processing_consent' => $request->boolean(
+                'ai_processing_consent'
+            ),
+            'ai_processing_consented_at' => $request->boolean(
+                'ai_processing_consent'
+            ) ? now() : null,
             'status' => 'pending',
             'consent_at' => now(),
         ]);

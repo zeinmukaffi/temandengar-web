@@ -23,6 +23,8 @@ class ConsultationRequest extends Model
         'preferred_time',
         'status',
         'consent_at',
+        'ai_processing_consent',
+        'ai_processing_consented_at',
     ];
 
     protected function casts(): array
@@ -30,6 +32,8 @@ class ConsultationRequest extends Model
         return [
             'preferred_date' => 'date',
             'consent_at' => 'datetime',
+            'ai_processing_consent' => 'boolean',
+            'ai_processing_consented_at' => 'datetime',
         ];
     }
 
