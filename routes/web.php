@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AccountSettingsController;
 use App\Http\Controllers\Admin\ConsultationController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
@@ -331,4 +332,20 @@ Route::middleware('auth')->group(function () {
         ProfileController::class,
         'removePhoto'
     ])->name('admin.profile.remove-photo');
+
+    // ========================================
+// ACCOUNT SETTINGS
+// ========================================
+
+    Route::get('/dashboard/pengaturan', [
+        AccountSettingsController::class,
+        'index'
+    ])->name('admin.settings.index');
+
+    Route::put('/dashboard/pengaturan/password', [
+        AccountSettingsController::class,
+        'updatePassword'
+    ])
+        ->middleware('throttle:5,1')
+        ->name('admin.settings.password.update');
 });

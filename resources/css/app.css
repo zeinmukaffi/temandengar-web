@@ -827,3 +827,125 @@ section {
     }
 
 }
+
+
+/* ===================================
+   DASHBOARD SIDEBAR REFINEMENT
+=================================== */
+
+.dashboard-sidebar {
+    padding: 24px 14px !important;
+    background: #FFFFFF;
+}
+
+/* Sidebar Groups */
+
+.sidebar-group {
+    margin-bottom: 12px;
+}
+
+.sidebar-group+.sidebar-group {
+    border-top: 1px solid #ECEBF2;
+    padding-top: 17px;
+    margin-top: 12px;
+}
+
+/* Section Titles */
+
+.sidebar-group-title {
+    padding: 0 11px;
+    margin-bottom: 9px;
+
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+
+    color: #9B9BAD;
+}
+
+/* Sidebar Links */
+
+.sidebar-link {
+    display: flex !important;
+    align-items: center;
+    gap: 11px;
+
+    width: 100%;
+    min-height: 42px;
+
+    padding: 10px 12px !important;
+    margin-bottom: 3px;
+
+    border-radius: 10px;
+
+    color: #67697B !important;
+    font-size: 12px;
+    font-weight: 500;
+
+    transition: all .2s ease;
+}
+
+.sidebar-link i {
+    width: 19px;
+    flex-shrink: 0;
+
+    font-size: 16px;
+    text-align: center;
+
+    color: #85869A;
+    transition: all .2s ease;
+}
+
+.sidebar-link span:not(.badge) {
+    flex: 1;
+}
+
+/* Hover */
+
+.sidebar-link:hover {
+    background: #F7F6FC;
+    color: #6259D9 !important;
+    transform: translateX(2px);
+}
+
+.sidebar-link:hover i {
+    color: #6259D9;
+}
+
+/* Active State */
+
+.sidebar-link.active {
+    background: #F0EEFF;
+    color: #5149B8 !important;
+    font-weight: 600;
+
+    box-shadow: inset 3px 0 0 #6259D9;
+}
+
+.sidebar-link.active i {
+    color: #6259D9;
+}
+
+/* Notification Badge */
+
+.sidebar-link .sidebar-count {
+    margin-left: auto;
+    font-size: 9px;
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+/* Responsive */
+
+@media (max-width: 767.98px) {
+
+    .dashboard-sidebar {
+        padding: 15px !important;
+    }
+
+    .sidebar-group+.sidebar-group {
+        margin-top: 10px;
+        padding-top: 13px;
+    }
+
+}

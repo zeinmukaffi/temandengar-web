@@ -167,25 +167,15 @@
 
                 </span>
 
-                <a href="{{ route('admin.profile.edit') }}" class="nav-link text-dark">
-
-                    <i class="bi bi-person-circle me-2"></i>
-                    Profil Saya
-
-                </a>
-
-
                 {{-- LOGOUT --}}
 
-                <form action="{{ route('logout') }}" method="POST">
+                <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
+                    data-bs-target="#logoutConfirmModal">
 
-                    @csrf
+                    <i class="bi bi-box-arrow-right me-1"></i>
+                    Logout
 
-                    <button class="btn btn-outline-danger btn-sm">
-                        Logout
-                    </button>
-
-                </form>
+                </button>
 
             </div>
 
@@ -195,71 +185,153 @@
     <div class="container-fluid">
         <div class="row">
 
-            <aside class="col-md-2 bg-white border-end p-3 sidebar">
 
-                <p class="text-secondary small fw-semibold">
-                    MENU UTAMA
-                </p>
+            <aside class="col-md-2 bg-white border-end p-3 sidebar dashboard-sidebar">
 
-                <div class="nav flex-column gap-2">
+                {{-- OVERVIEW --}}
+                <div class="sidebar-group">
 
-                    <a href="{{ route('admin.dashboard') }}" class="nav-link text-dark">
-                        <i class="bi bi-grid me-2"></i>
-                        Dashboard
+                    <div class="sidebar-group-title">
+                        OVERVIEW
+                    </div>
+
+                    <a href="{{ route('admin.dashboard') }}"
+                        class="nav-link sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+
+                        <i class="bi bi-grid"></i>
+                        <span>Dashboard</span>
+
                     </a>
 
-                    <a href="{{ route('admin.pipeline.index') }}" class="nav-link text-dark">
-                        <i class="bi bi-kanban me-2"></i>
-                        Pipeline Kasus
+                </div>
+
+
+                {{-- CONSULTATION MANAGEMENT --}}
+                <div class="sidebar-group">
+
+                    <div class="sidebar-group-title">
+                        MANAJEMEN KONSULTASI
+                    </div>
+
+                    <a href="{{ route('admin.pipeline.index') }}"
+                        class="nav-link sidebar-link {{ request()->routeIs('admin.pipeline.*') ? 'active' : '' }}">
+
+                        <i class="bi bi-kanban"></i>
+                        <span>Pipeline Kasus</span>
+
                     </a>
 
-                    <a href="{{ route('admin.performance.index') }}" class="nav-link text-dark">
-                        <i class="bi bi-bar-chart-line me-2"></i>
-                        Statistik Performa
+
+                    <a href="{{ route('admin.consultations.index') }}"
+                        class="nav-link sidebar-link {{ request()->routeIs('admin.consultations.*') ? 'active' : '' }}">
+
+                        <i class="bi bi-chat-left-text"></i>
+                        <span>Permintaan Konsultasi</span>
+
                     </a>
 
-                    <a href="{{ route('admin.consultations.index') }}" class="nav-link text-dark">
-                        <i class="bi bi-chat-left-text me-2"></i>
-                        Permintaan Konsultasi
+
+                    <a href="{{ route('admin.schedules.index') }}"
+                        class="nav-link sidebar-link {{ request()->routeIs('admin.schedules.*') ? 'active' : '' }}">
+
+                        <i class="bi bi-calendar-event"></i>
+                        <span>Jadwal Konsultasi</span>
+
                     </a>
 
-                    <a href="{{ route('admin.schedules.index') }}" class="nav-link text-dark">
-                        <i class="bi bi-calendar-event me-2"></i>
-                        Jadwal Konsultasi
+                </div>
+
+
+                {{-- MONITORING --}}
+                <div class="sidebar-group">
+
+                    <div class="sidebar-group-title">
+                        MONITORING
+                    </div>
+
+                    <a href="{{ route('admin.performance.index') }}"
+                        class="nav-link sidebar-link {{ request()->routeIs('admin.performance.*') ? 'active' : '' }}">
+
+                        <i class="bi bi-bar-chart-line"></i>
+                        <span>Statistik Performa</span>
+
                     </a>
 
-                    <a href="{{ route('admin.notifications.index') }}" class="nav-link text-dark">
 
-                        <i class="bi bi-bell me-2"></i>
+                    <a href="{{ route('admin.feedback.index') }}"
+                        class="nav-link sidebar-link {{ request()->routeIs('admin.feedback.*') ? 'active' : '' }}">
 
-                        Notifikasi
+                        <i class="bi bi-star"></i>
+                        <span>Feedback & Rating</span>
+
+                    </a>
+
+
+                    <a href="{{ route('admin.notifications.index') }}"
+                        class="nav-link sidebar-link {{ request()->routeIs('admin.notifications.*') ? 'active' : '' }}">
+
+                        <i class="bi bi-bell"></i>
+                        <span>Notifikasi</span>
 
                         @if ($unreadNotificationCount > 0)
-                            <span class="badge text-bg-danger ms-auto">
+                            <span class="badge text-bg-danger sidebar-count">
 
-                                {{ $unreadNotificationCount }}
+                                {{ $unreadNotificationCount > 99 ? '99+' : $unreadNotificationCount }}
 
                             </span>
                         @endif
 
                     </a>
 
+                </div>
 
-                    <a href="{{ route('admin.resources.index') }}" class="nav-link text-dark">
-                        <i class="bi bi-book me-2"></i>
-                        Materi Pendukung
+
+                {{-- CONTENT --}}
+                <div class="sidebar-group">
+
+                    <div class="sidebar-group-title">
+                        KONTEN
+                    </div>
+
+                    <a href="{{ route('admin.resources.index') }}"
+                        class="nav-link sidebar-link {{ request()->routeIs('admin.resources.*') ? 'active' : '' }}">
+
+                        <i class="bi bi-book"></i>
+                        <span>Materi Pendukung</span>
+
                     </a>
 
-                    <a href="{{ route('admin.feedback.index') }}" class="nav-link text-dark">
+                </div>
 
-                        <i class="bi bi-star me-2"></i>
-                        Feedback & Rating
+
+                {{-- ACCOUNT SETTINGS --}}
+                <div class="sidebar-group">
+
+                    <div class="sidebar-group-title">
+                        PENGATURAN AKUN
+                    </div>
+
+                    <a href="{{ route('admin.profile.edit') }}"
+                        class="nav-link sidebar-link {{ request()->routeIs('admin.profile.*') ? 'active' : '' }}">
+
+                        <i class="bi bi-person-circle"></i>
+                        <span>Profil Saya</span>
+
+                    </a>
+
+
+                    <a href="{{ route('admin.settings.index') }}"
+                        class="nav-link sidebar-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+
+                        <i class="bi bi-gear"></i>
+                        <span>Pengaturan Akun</span>
 
                     </a>
 
                 </div>
 
             </aside>
+
 
             <main class="col-md-10 p-4 dashboard-main">
 
@@ -287,6 +359,65 @@
             </main>
 
         </div>
+    </div>
+
+    {{-- LOGOUT CONFIRMATION MODAL --}}
+
+    <div class="modal fade" id="logoutConfirmModal" tabindex="-1" aria-labelledby="logoutConfirmLabel"
+        aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+
+            <div class="modal-content border-0 rounded-4">
+
+                <div class="modal-body text-center p-4">
+
+                    <div class="td-icon peach mx-auto mb-3">
+
+                        <i class="bi bi-box-arrow-right"></i>
+
+                    </div>
+
+                    <h5 class="fw-bold" id="logoutConfirmLabel">
+                        Keluar dari Akun?
+                    </h5>
+
+                    <p class="text-secondary small mb-4">
+
+                        Apakah kamu yakin ingin mengakhiri
+                        sesi TemanDengar?
+
+                    </p>
+
+                    <div class="d-flex gap-2">
+
+                        <button type="button" class="btn btn-light flex-grow-1" data-bs-dismiss="modal">
+
+                            Batal
+
+                        </button>
+
+
+                        <form action="{{ route('logout') }}" method="POST" class="flex-grow-1">
+
+                            @csrf
+
+                            <button type="submit" class="btn btn-danger w-100">
+
+                                Ya, Logout
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
 </body>
