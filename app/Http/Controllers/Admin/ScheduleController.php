@@ -118,6 +118,25 @@ class ScheduleController extends Controller
             ]);
         });
 
+        app(\App\Services\CounselorNotificationService::class)
+            ->notifyCounselors(
+                'schedule_created',
+
+                'Jadwal konsultasi dibuat',
+
+                'Jadwal konsultasi untuk tiket '
+                . $consultationRequest->ticket_number
+                . ' berhasil dibuat.',
+
+                route(
+                    'admin.consultations.show',
+                    $consultationRequest,
+                    false
+                ),
+
+                'bi-calendar-plus'
+            );
+
         return redirect()
             ->route('admin.consultations.show', $consultationRequest)
             ->with('success', 'Jadwal konsultasi berhasil dibuat.');
@@ -165,6 +184,25 @@ class ScheduleController extends Controller
             ]);
         });
 
+        app(\App\Services\CounselorNotificationService::class)
+            ->notifyCounselors(
+                'schedule_updated',
+
+                'Jadwal konsultasi diperbarui',
+
+                'Jadwal konsultasi untuk tiket '
+                . $consultation->consultationRequest->ticket_number
+                . ' telah diperbarui.',
+
+                route(
+                    'admin.consultations.show',
+                    $consultation->consultationRequest,
+                    false
+                ),
+
+                'bi-calendar-event'
+            );
+
         return redirect()
             ->route('admin.schedules.index')
             ->with('success', 'Jadwal berhasil diperbarui.');
@@ -197,6 +235,25 @@ class ScheduleController extends Controller
             ]);
         });
 
+        app(\App\Services\CounselorNotificationService::class)
+            ->notifyCounselors(
+                'consultation_completed',
+
+                'Konsultasi telah selesai',
+
+                'Sesi konsultasi untuk tiket '
+                . $consultation->consultationRequest->ticket_number
+                . ' telah diselesaikan.',
+
+                route(
+                    'admin.consultations.show',
+                    $consultation->consultationRequest,
+                    false
+                ),
+
+                'bi-check-circle'
+            );
+
         return back()->with(
             'success',
             'Konsultasi berhasil diselesaikan.'
@@ -228,6 +285,25 @@ class ScheduleController extends Controller
                 'description' => 'Jadwal konsultasi dibatalkan.',
             ]);
         });
+
+        app(\App\Services\CounselorNotificationService::class)
+            ->notifyCounselors(
+                'schedule_cancelled',
+
+                'Jadwal konsultasi dibatalkan',
+
+                'Jadwal konsultasi untuk tiket '
+                . $consultation->consultationRequest->ticket_number
+                . ' telah dibatalkan.',
+
+                route(
+                    'admin.consultations.show',
+                    $consultation->consultationRequest,
+                    false
+                ),
+
+                'bi-calendar-x'
+            );
 
         return back()->with(
             'success',

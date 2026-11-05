@@ -330,6 +330,65 @@
 
                 </div>
 
+                {{-- FEEDBACK LINK --}}
+
+                @if ($feedbackUrl)
+                    <div class="card border-0 shadow-sm rounded-4 mb-4">
+
+                        <div class="card-body p-4">
+
+                            <div class="td-icon mint mb-3">
+
+                                <i class="bi bi-star"></i>
+
+                            </div>
+
+                            <h6 class="fw-bold">
+                                Minta Feedback Mahasiswa
+                            </h6>
+
+                            <p class="text-secondary small">
+
+                                Bagikan link berikut agar mahasiswa dapat
+                                memberikan rating dan masukan setelah konsultasi.
+
+                            </p>
+
+                            <div class="input-group mb-3">
+
+                                <input type="text" id="feedback-link" class="form-control form-control-sm"
+                                    value="{{ $feedbackUrl }}" readonly>
+
+                                <button type="button" class="btn btn-outline-primary" onclick="copyFeedbackLink()"
+                                    aria-label="Salin link feedback">
+
+                                    <i class="bi bi-copy"></i>
+
+                                </button>
+
+                            </div>
+
+                            <a href="https://wa.me/?text={{ urlencode('Halo, terima kasih sudah mengikuti sesi konsultasi bersama TemanDengar. Kami mengundang kamu untuk memberikan feedback melalui tautan berikut: ' . $feedbackUrl) }}"
+                                target="_blank" rel="noopener noreferrer" class="btn btn-success w-100">
+
+                                <i class="bi bi-whatsapp me-1"></i>
+
+                                Bagikan via WhatsApp
+
+                            </a>
+
+                            <small class="text-secondary d-block mt-3">
+
+                                Link berlaku selama 30 hari dan hanya dapat
+                                digunakan untuk satu kali pengiriman feedback.
+
+                            </small>
+
+                        </div>
+
+                    </div>
+                @endif
+
             </div>
 
 
@@ -369,5 +428,22 @@
         </div>
 
     </div>
+    <script>
+        function copyFeedbackLink() {
 
+            const input = document.getElementById('feedback-link');
+
+            navigator.clipboard.writeText(input.value)
+                .then(() => {
+                    alert('Link feedback berhasil disalin.');
+                })
+                .catch(() => {
+                    input.select();
+                    document.execCommand('copy');
+
+                    alert('Link feedback berhasil disalin.');
+                });
+
+        }
+    </script>
 @endsection

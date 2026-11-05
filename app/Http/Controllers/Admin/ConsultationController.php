@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\ConsultationRequest;
 use App\Models\ActivityLog;
-use Illuminate\Http\Request;
+use App\Models\ConsultationRequest;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
-use Illuminate\Validation\Rule;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class ConsultationController extends Controller
 {
@@ -39,16 +40,33 @@ class ConsultationController extends Controller
     public function show(ConsultationRequest $consultationRequest): View
     {
         $consultationRequest->load([
-            'consultation',
+            'consultation.feedback',
             'aiAssistanceLogs',
         ]);
 
+        $feedbackUrl = null;
+
+        $consultation = $consultationRequest->consultation;
+
+        if (
+            $consultation &&
+            $consultation->session_status === 'completed' &&
+            !$consultation->feedback
+        ) {
+
+            $feedbackUrl = URL::temporarySignedRoute(
+                'public.feedback.create',
+                now()->addDays(30),
+                ['consultation' => $consultation->id]
+            );
+
+        }
+
         return view(
             'admin.consultations.show',
-            compact('consultationRequest')
+            compact('consultationRequest', 'feedbackUrl')
         );
     }
-
     public function updateStatus(
         Request $request,
         ConsultationRequest $consultationRequest
