@@ -1,21 +1,58 @@
-@extends('layouts.auth')
+@extends('layouts.public')
 
 @section('title', 'Beranda')
 
 @section('content')
 
-    <div class="container py-5 text-center">
+    <section class="py-5">
+        <div class="container py-lg-5">
 
-        <h1 class="fw-bold text-primary">TemanDengar.</h1>
+            <div class="row align-items-center g-5">
 
-        <p class="text-secondary">
-            Ruang aman untuk didengar, teman untuk bercerita.
-        </p>
+                <div class="col-lg-6">
 
-        <a href="{{ route('login') }}" class="btn btn-primary">
-            Login Konselor
-        </a>
+                    <span class="badge bg-success-subtle text-success mb-3">
+                        Peer Counseling
+                    </span>
 
-    </div>
+                    <h1 class="display-5 fw-bold mb-4">
+                        Tidak harus menghadapi semuanya sendirian.
+                    </h1>
+
+                    <p class="text-secondary mb-4">
+                        TemanDengar adalah ruang untuk bercerita,
+                        berbagi pengalaman, dan mendapatkan dukungan
+                        dari teman sebaya.
+                    </p>
+
+                    <a href="{{ route('consultations.create') }}" class="btn btn-primary btn-lg">
+                        Mulai Curhat
+                        <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+
+                </div>
+
+                <div class="col-lg-6">
+
+                    <div class="bg-white rounded-4 shadow-sm p-5 text-center">
+
+                        <i class="bi bi-chat-heart text-primary" style="font-size: 100px;"></i>
+
+                        <h4 class="fw-semibold mt-3">
+                            Cerita kamu berarti.
+                        </h4>
+
+                        <p class="text-secondary mb-0">
+                            Ada teman yang siap mendengarkan.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </section>
 
 @endsection
