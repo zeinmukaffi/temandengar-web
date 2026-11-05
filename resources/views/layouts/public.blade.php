@@ -24,8 +24,12 @@
                     Mulai Curhat
                 </a>
 
+                <a href="{{ route('public.resources.index') }}" class="text-decoration-none text-secondary small">
+                    Materi
+                </a>
+
                 <a href="{{ route('login') }}" class="text-decoration-none text-secondary small">
-                    Login Konselor
+                    Login
                 </a>
             </div>
 

@@ -64,7 +64,7 @@
                         Jadwal Konsultasi
                     </a>
 
-                    <a href="#" class="nav-link text-dark">
+                    <a href="{{ route('admin.resources.index') }}" class="nav-link text-dark">
                         <i class="bi bi-book me-2"></i>
                         Materi Pendukung
                     </a>

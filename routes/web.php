@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Website\ConsultationRequestController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\ResourceController as AdminResourceController;
+use App\Http\Controllers\Website\ResourceController as PublicResourceController;
 
 // ========================================
 // PUBLIC WEBSITE
@@ -51,6 +53,19 @@ Route::middleware('guest')->group(function () {
 
 });
 
+// ========================================
+// PUBLIC RESOURCE
+// ========================================
+
+Route::get('/materi', [
+    PublicResourceController::class,
+    'index'
+])->name('public.resources.index');
+
+Route::get('/materi/{resource}', [
+    PublicResourceController::class,
+    'show'
+])->name('public.resources.show');
 
 // ========================================
 // COUNSELOR DASHBOARD
@@ -92,8 +107,8 @@ Route::middleware('auth')->group(function () {
     ])->name('admin.consultations.destroy');
 
     // ========================================
-// SCHEDULE MANAGEMENT
-// ========================================
+    // SCHEDULE MANAGEMENT
+    // ========================================
 
     Route::get('/dashboard/jadwal', [
         ScheduleController::class,
@@ -134,4 +149,37 @@ Route::middleware('auth')->group(function () {
         'cancel'
     ])->name('admin.schedules.cancel');
 
+    // ========================================
+// ADMIN RESOURCE MANAGEMENT
+// ========================================
+
+    Route::get('/dashboard/materi', [
+        AdminResourceController::class,
+        'index'
+    ])->name('admin.resources.index');
+
+    Route::get('/dashboard/materi/create', [
+        AdminResourceController::class,
+        'create'
+    ])->name('admin.resources.create');
+
+    Route::post('/dashboard/materi', [
+        AdminResourceController::class,
+        'store'
+    ])->name('admin.resources.store');
+
+    Route::get('/dashboard/materi/{resource}/edit', [
+        AdminResourceController::class,
+        'edit'
+    ])->name('admin.resources.edit');
+
+    Route::put('/dashboard/materi/{resource}', [
+        AdminResourceController::class,
+        'update'
+    ])->name('admin.resources.update');
+
+    Route::delete('/dashboard/materi/{resource}', [
+        AdminResourceController::class,
+        'destroy'
+    ])->name('admin.resources.destroy');
 });
