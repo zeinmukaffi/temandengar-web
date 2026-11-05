@@ -208,17 +208,14 @@
 
                             <select name="status" class="form-select mb-3" required>
 
-                                <option value="reviewing">
-                                    Sedang Ditinjau
-                                </option>
-
-                                <option value="rejected">
-                                    Tolak Permintaan
-                                </option>
-
-                                <option value="referred">
-                                    Rujuk ke Profesional
-                                </option>
+                                @if ($item->status === 'pending')
+                                    <option value="reviewing">Sedang Ditinjau</option>
+                                    <option value="rejected">Tolak Permintaan</option>
+                                    <option value="referred">Rujuk ke Profesional</option>
+                                @elseif($item->status === 'reviewing')
+                                    <option value="rejected">Tolak Permintaan</option>
+                                    <option value="referred">Rujuk ke Profesional</option>
+                                @endif
 
                             </select>
 

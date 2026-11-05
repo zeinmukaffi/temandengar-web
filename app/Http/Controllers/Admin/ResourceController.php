@@ -66,7 +66,11 @@ class ResourceController extends Controller
                 Rule::in(array_keys($this->categories())),
             ],
             'description' => ['nullable', 'string', 'max:3000'],
-            'resource_url' => ['required', 'url', 'max:255'],
+            'resource_url' => [
+                'required',
+                'url:http,https',
+                'max:255',
+            ],
             'is_published' => ['sometimes', 'boolean'],
         ]);
 

@@ -41,7 +41,7 @@
     <div class="container-fluid">
         <div class="row">
 
-            <aside class="col-md-2 bg-white border-end min-vh-100 p-3">
+            <aside class="col-md-2 bg-white border-end p-3 sidebar">
 
                 <p class="text-secondary small fw-semibold">
                     MENU UTAMA
@@ -73,7 +73,7 @@
 
             </aside>
 
-            <main class="col-md-10 p-4">
+            <main class="col-md-10 p-4 dashboard-main">
 
                 @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show">

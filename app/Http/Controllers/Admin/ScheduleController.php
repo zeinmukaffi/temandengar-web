@@ -85,6 +85,14 @@ class ScheduleController extends Controller
             ],
         ]);
 
+        $validated['meeting_link'] = $validated['method'] === 'online'
+            ? ($validated['meeting_link'] ?? null)
+            : null;
+
+        $validated['location'] = $validated['method'] === 'offline'
+            ? ($validated['location'] ?? null)
+            : null;
+
         DB::transaction(function () use ($validated, $consultationRequest) {
 
             $consultationRequest->consultation()->create([
