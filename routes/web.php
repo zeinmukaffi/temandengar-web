@@ -2,18 +2,25 @@
 
 use App\Http\Controllers\Admin\ConsultationController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ResourceController as AdminResourceController;
 use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Website\ConsultationRequestController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\ResourceController as AdminResourceController;
+use App\Http\Controllers\Website\HomeController;
 use App\Http\Controllers\Website\ResourceController as PublicResourceController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Website\PageController;
+use App\Http\Controllers\Website\CounselorController as PublicCounselorController;
+use App\Http\Controllers\Website\TestimonialController;
 
 // ========================================
 // PUBLIC WEBSITE
 // ========================================
 
-Route::view('/', 'public.home')->name('home');
+Route::get('/', [
+    HomeController::class,
+    'index'
+])->name('home');
 
 Route::get('/konsultasi', [
     ConsultationRequestController::class,
@@ -31,6 +38,57 @@ Route::get('/konsultasi/berhasil', [
     ConsultationRequestController::class,
     'success'
 ])->name('consultations.success');
+
+// ========================================
+// PUBLIC PAGES
+// ========================================
+
+Route::get('/tentang', [
+    PageController::class,
+    'about'
+])->name('public.about');
+
+Route::get('/layanan', [
+    PageController::class,
+    'services'
+])->name('public.services');
+
+Route::get('/faq', [
+    PageController::class,
+    'faq'
+])->name('public.faq');
+
+Route::get('/kebijakan-privasi', [
+    PageController::class,
+    'privacy'
+])->name('public.privacy');
+
+
+// ========================================
+// COUNSELOR DIRECTORY
+// ========================================
+
+Route::get('/konselor', [
+    PublicCounselorController::class,
+    'index'
+])->name('public.counselors.index');
+
+Route::get('/konselor/{user}', [
+    PublicCounselorController::class,
+    'show'
+])
+    ->whereNumber('user')
+    ->name('public.counselors.show');
+
+
+// ========================================
+// PUBLIC TESTIMONIAL
+// ========================================
+
+Route::get('/testimoni', [
+    TestimonialController::class,
+    'index'
+])->name('public.testimonials.index');
 
 
 // ========================================

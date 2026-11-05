@@ -4,48 +4,66 @@
 
 @section('content')
 
-    <div class="container py-5">
+    <section class="section-padding bg-soft min-vh-75 d-flex align-items-center">
 
-        <div class="row justify-content-center">
+        <div class="container">
 
-            <div class="col-lg-6">
+            <div class="row justify-content-center">
 
-                <div class="card border-0 shadow-sm rounded-4 text-center">
+                <div class="col-lg-6">
 
-                    <div class="card-body p-5">
+                    <div class="td-card text-center p-5">
 
-                        <i class="bi bi-check-circle-fill text-success" style="font-size: 65px;"></i>
+                        <div class="td-icon mint mx-auto mb-4" style="width:75px;height:75px;font-size:32px;">
 
-                        <h2 class="fw-bold mt-4">
-                            Pengajuan Berhasil!
+                            <i class="bi bi-check-lg"></i>
+
+                        </div>
+
+                        <span class="section-label mb-3">
+                            Submission Successful
+                        </span>
+
+                        <h2 class="fw-bold mb-3">
+                            Ceritamu sudah kami terima.
                         </h2>
 
-                        <p class="text-secondary">
+                        <p class="text-muted-custom">
+
                             Terima kasih telah mempercayai TemanDengar.
-                            Permintaan konsultasimu telah kami terima.
+                            Permintaan konsultasimu berhasil dikirim
+                            dan akan ditinjau oleh konselor.
+
                         </p>
 
-                        <div class="bg-light rounded-3 p-4 my-4">
 
-                            <small class="text-secondary">
-                                NOMOR TIKET KONSULTASI
+                        <div class="bg-light rounded-4 p-4 my-4">
+
+                            <small class="text-secondary fw-semibold">
+                                NOMOR TIKET PENGAJUAN
                             </small>
 
-                            <h3 class="fw-bold text-primary mt-2">
+                            <h3 class="fw-bold text-primary mt-2 mb-0">
                                 {{ session('ticket_number') }}
                             </h3>
 
                         </div>
 
-                        <p class="small text-secondary">
-                            Simpan nomor tiket ini untuk keperluan
-                            administrasi konsultasi. Konselor akan
-                            menghubungimu melalui kontak yang diberikan.
+
+                        <p class="text-muted-custom small mb-4">
+
+                            Simpan nomor tiket tersebut untuk referensi.
+                            Konselor akan menghubungimu melalui kontak
+                            yang telah diberikan.
+
                         </p>
+
 
                         <a href="{{ route('home') }}" class="btn btn-primary w-100">
 
                             Kembali ke Beranda
+
+                            <i class="bi bi-house ms-1"></i>
 
                         </a>
 
@@ -57,6 +75,6 @@
 
         </div>
 
-    </div>
+    </section>
 
 @endsection

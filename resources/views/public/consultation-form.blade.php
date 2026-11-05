@@ -1,289 +1,316 @@
 @extends('layouts.public')
 
-@section('title', 'Form Konsultasi')
+@section('title', 'Mulai Curhat')
 
 @section('content')
 
-    <div class="container py-5">
+    <section class="hero-section">
 
-        <div class="row justify-content-center">
+        <div class="container">
 
-            <div class="col-lg-8">
+            <div class="row justify-content-center text-center">
 
-                <div class="mb-4">
-                    <h2 class="fw-bold">Mulai Ceritakan</h2>
+                <div class="col-lg-8">
 
-                    <p class="text-secondary">
-                        Isi formulir berikut agar konselor dapat
-                        memahami kebutuhan konsultasimu.
+                    <span class="section-label mb-3">
+                        Start Your Story
+                    </span>
+
+                    <h1 class="hero-title mb-3">
+                        Mulai dari satu
+                        <span>cerita.</span>
+                    </h1>
+
+                    <p class="hero-description mx-auto">
+                        Ceritakan kebutuhan konsultasimu. Konselor akan
+                        meninjau permintaan dan menghubungimu untuk
+                        membicarakan langkah berikutnya.
                     </p>
+
                 </div>
 
-                <div class="card border-0 shadow-sm rounded-4">
+            </div>
 
-                    <div class="card-body p-4 p-lg-5">
+        </div>
 
-                        <form action="{{ route('consultations.store') }}" method="POST">
+    </section>
 
-                            @csrf
 
-                            {{-- Nama Panggilan --}}
-                            <div class="mb-3">
+    <section class="section-padding pt-0">
 
-                                <label class="form-label">
-                                    Nama Panggilan *
-                                </label>
+        <div class="container">
 
-                                <input type="text" name="alias"
-                                    class="form-control @error('alias') is-invalid @enderror" value="{{ old('alias') }}"
-                                    placeholder="Masukkan nama panggilan" required>
+            <div class="row justify-content-center">
 
-                                @error('alias')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
+                <div class="col-lg-8">
 
-                            </div>
+                    <div class="card border-0 shadow-sm rounded-4">
 
-                            {{-- Email --}}
-                            <div class="mb-3">
+                        <div class="card-body p-4 p-lg-5">
 
-                                <label class="form-label">
-                                    Email
-                                </label>
+                            <form action="{{ route('consultations.store') }}" method="POST">
 
-                                <input type="email" name="email"
-                                    class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}"
-                                    placeholder="nama@email.com">
+                                @csrf
 
-                                @error('email')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
+                                <h5 class="fw-bold mb-1">
+                                    Informasi Kontak
+                                </h5>
 
-                            </div>
+                                <p class="text-muted-custom small mb-4">
+                                    Isi nama panggilan dan minimal satu kontak.
+                                </p>
 
-                            {{-- WhatsApp --}}
-                            <div class="mb-3">
 
-                                <label class="form-label">
-                                    Nomor WhatsApp
-                                </label>
-
-                                <input type="text" name="phone"
-                                    class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone') }}"
-                                    placeholder="08xxxxxxxxxx">
-
-                                @error('phone')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-
-                                <small class="text-secondary">
-                                    Isi minimal salah satu: email atau WhatsApp.
-                                </small>
-
-                            </div>
-
-                            <hr class="my-4">
-
-                            {{-- Topik --}}
-                            <div class="mb-3">
-
-                                <label class="form-label">
-                                    Topik Konsultasi *
-                                </label>
-
-                                <select name="topic" class="form-select @error('topic') is-invalid @enderror" required>
-
-                                    <option value="">Pilih topik</option>
-
-                                    <option value="academic" @selected(old('topic') == 'academic')>
-                                        Akademik dan Perkuliahan
-                                    </option>
-
-                                    <option value="personal" @selected(old('topic') == 'personal')>
-                                        Masalah Pribadi
-                                    </option>
-
-                                    <option value="social" @selected(old('topic') == 'social')>
-                                        Pertemanan dan Sosial
-                                    </option>
-
-                                    <option value="organization" @selected(old('topic') == 'organization')>
-                                        Organisasi dan Aktivitas
-                                    </option>
-
-                                    <option value="other" @selected(old('topic') == 'other')>
-                                        Lainnya
-                                    </option>
-
-                                </select>
-
-                                @error('topic')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-
-                            </div>
-
-                            {{-- Cerita --}}
-                            <div class="mb-3">
-
-                                <label class="form-label">
-                                    Ceritakan Kebutuhanmu *
-                                </label>
-
-                                <textarea name="description" rows="5" maxlength="3000"
-                                    class="form-control @error('description') is-invalid @enderror"
-                                    placeholder="Ceritakan secara singkat apa yang ingin kamu diskusikan..." required>{{ old('description') }}</textarea>
-
-                                @error('description')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-
-                            </div>
-
-                            <hr class="my-4">
-
-                            {{-- Metode --}}
-                            <div class="mb-3">
-
-                                <label class="form-label">
-                                    Preferensi Konsultasi *
-                                </label>
-
-                                <select name="preferred_method"
-                                    class="form-select @error('preferred_method') is-invalid @enderror" required>
-
-                                    <option value="online" @selected(old('preferred_method', 'online') == 'online')>
-                                        Online
-                                    </option>
-
-                                    <option value="offline" @selected(old('preferred_method') == 'offline')>
-                                        Tatap Muka
-                                    </option>
-
-                                </select>
-
-                                @error('preferred_method')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-
-                            </div>
-
-                            <div class="row">
-
-                                <div class="col-md-6 mb-3">
+                                <div class="mb-3">
 
                                     <label class="form-label">
-                                        Preferensi Tanggal
+                                        Nama Panggilan *
                                     </label>
 
-                                    <input type="date" name="preferred_date" min="{{ date('Y-m-d') }}"
-                                        value="{{ old('preferred_date') }}"
-                                        class="form-control @error('preferred_date') is-invalid @enderror">
+                                    <input type="text" name="alias"
+                                        class="form-control @error('alias') is-invalid @enderror"
+                                        value="{{ old('alias') }}" required>
 
-                                    @error('preferred_date')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
+                                    @error('alias')
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
 
                                 </div>
 
-                                <div class="col-md-6 mb-3">
+
+                                <div class="row">
+
+                                    <div class="col-md-6 mb-3">
+
+                                        <label class="form-label">Email</label>
+
+                                        <input type="email" name="email"
+                                            class="form-control @error('email') is-invalid @enderror"
+                                            value="{{ old('email') }}" placeholder="nama@email.com">
+
+                                        @error('email')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+
+                                    </div>
+
+
+                                    <div class="col-md-6 mb-3">
+
+                                        <label class="form-label">
+                                            Nomor WhatsApp
+                                        </label>
+
+                                        <input type="text" name="phone"
+                                            class="form-control @error('phone') is-invalid @enderror"
+                                            value="{{ old('phone') }}" placeholder="08xxxxxxxxxx">
+
+                                        @error('phone')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+
+                                    </div>
+
+                                </div>
+
+
+                                <hr class="my-4">
+
+
+                                <h5 class="fw-bold mb-1">
+                                    Kebutuhan Konsultasi
+                                </h5>
+
+                                <p class="text-muted-custom small mb-4">
+                                    Pilih topik dan ceritakan hal yang ingin dibicarakan.
+                                </p>
+
+
+                                <div class="mb-3">
 
                                     <label class="form-label">
-                                        Preferensi Waktu
+                                        Topik Konsultasi *
                                     </label>
 
-                                    <select name="preferred_time" class="form-select">
+                                    <select name="topic" class="form-select @error('topic') is-invalid @enderror"
+                                        required>
 
-                                        <option value="">Fleksibel</option>
+                                        <option value="">Pilih topik</option>
 
-                                        <option value="08:00-10:00" @selected(old('preferred_time') == '08:00-10:00')>
-                                            08.00–10.00
+                                        <option value="academic" @selected(old('topic') == 'academic')>
+                                            Akademik dan Perkuliahan
                                         </option>
 
-                                        <option value="10:00-12:00" @selected(old('preferred_time') == '10:00-12:00')>
-                                            10.00–12.00
+                                        <option value="personal" @selected(old('topic') == 'personal')>
+                                            Pengembangan Diri
                                         </option>
 
-                                        <option value="13:00-15:00" @selected(old('preferred_time') == '13:00-15:00')>
-                                            13.00–15.00
+                                        <option value="social" @selected(old('topic') == 'social')>
+                                            Pertemanan dan Sosial
                                         </option>
 
-                                        <option value="15:00-17:00" @selected(old('preferred_time') == '15:00-17:00')>
-                                            15.00–17.00
+                                        <option value="organization" @selected(old('topic') == 'organization')>
+                                            Organisasi dan Aktivitas
+                                        </option>
+
+                                        <option value="other" @selected(old('topic') == 'other')>
+                                            Lainnya
+                                        </option>
+
+                                    </select>
+
+                                    @error('topic')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+
+                                </div>
+
+
+                                <div class="mb-3">
+
+                                    <label class="form-label">
+                                        Ceritakan Kebutuhanmu *
+                                    </label>
+
+                                    <textarea name="description" rows="5" maxlength="3000"
+                                        class="form-control @error('description') is-invalid @enderror"
+                                        placeholder="Tuliskan secara singkat hal yang ingin kamu diskusikan..." required>{{ old('description') }}</textarea>
+
+                                    @error('description')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+
+                                </div>
+
+
+                                <hr class="my-4">
+
+
+                                <h5 class="fw-bold mb-1">
+                                    Preferensi Konsultasi
+                                </h5>
+
+                                <p class="text-muted-custom small mb-4">
+                                    Jadwal akhir akan dikonfirmasi bersama konselor.
+                                </p>
+
+
+                                <div class="mb-3">
+
+                                    <label class="form-label">
+                                        Metode Konsultasi *
+                                    </label>
+
+                                    <select name="preferred_method" class="form-select" required>
+
+                                        <option value="online" @selected(old('preferred_method', 'online') == 'online')>
+                                            Online
+                                        </option>
+
+                                        <option value="offline" @selected(old('preferred_method') == 'offline')>
+                                            Tatap Muka
                                         </option>
 
                                     </select>
 
                                 </div>
 
-                            </div>
 
-                            {{-- Persetujuan --}}
-                            <div class="mb-4">
+                                <div class="row">
 
-                                <div class="form-check">
+                                    <div class="col-md-6 mb-3">
 
-                                    <div class="bg-light rounded-3 p-3 mb-3">
+                                        <label class="form-label">
+                                            Preferensi Tanggal
+                                        </label>
 
-                                        <h6 class="fw-semibold">
-                                            <i class="bi bi-shield-lock me-1"></i>
-                                            Privasi dan Kerahasiaan
-                                        </h6>
+                                        <input type="date" name="preferred_date" min="{{ date('Y-m-d') }}"
+                                            value="{{ old('preferred_date') }}"
+                                            class="form-control @error('preferred_date') is-invalid @enderror">
 
-                                        <p class="text-secondary small mb-0">
-
-                                            Informasi yang kamu berikan akan digunakan untuk
-                                            mengelola permintaan konsultasi dan menghubungimu
-                                            terkait layanan TemanDengar. Jangan cantumkan
-                                            informasi pribadi yang tidak diperlukan.
-
-                                        </p>
+                                        @error('preferred_date')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
 
                                     </div>
 
+
+                                    <div class="col-md-6 mb-3">
+
+                                        <label class="form-label">
+                                            Preferensi Waktu
+                                        </label>
+
+                                        <select name="preferred_time" class="form-select">
+
+                                            <option value="">Fleksibel</option>
+
+                                            @foreach (['08:00-10:00', '10:00-12:00', '13:00-15:00', '15:00-17:00'] as $time)
+                                                <option value="{{ $time }}" @selected(old('preferred_time') == $time)>
+
+                                                    {{ str_replace('-', ' – ', $time) }}
+
+                                                </option>
+                                            @endforeach
+
+                                        </select>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="bg-soft rounded-4 p-3 mb-4">
+
+                                    <h6 class="fw-bold">
+                                        <i class="bi bi-shield-check text-primary me-1"></i>
+                                        Informasi Privasi
+                                    </h6>
+
+                                    <p class="text-muted-custom small mb-2">
+                                        Informasi yang kamu berikan digunakan
+                                        untuk pengelolaan permintaan konsultasi.
+                                        Jangan masukkan data yang tidak diperlukan.
+                                    </p>
+
+                                    <a href="{{ route('public.privacy') }}" class="small text-primary">
+                                        Baca Kebijakan Privasi
+                                    </a>
+
+                                </div>
+
+
+                                <div class="form-check mb-4">
+
                                     <input type="checkbox" name="consent" value="1" id="consent"
                                         class="form-check-input @error('consent') is-invalid @enderror"
-                                        @checked(old('consent'))>
+                                        @checked(old('consent')) required>
 
-                                    <label class="form-check-label" for="consent">
+                                    <label class="form-check-label small" for="consent">
 
-                                        Saya menyetujui penggunaan data
-                                        yang saya berikan untuk keperluan
-                                        pengelolaan konsultasi.
+                                        Saya telah membaca informasi privasi dan menyetujui
+                                        penggunaan data untuk pengelolaan permintaan konsultasi.
 
                                     </label>
 
                                     @error('consent')
-                                        <div class="text-danger small mt-1">
+                                        <div class="text-danger small">
                                             {{ $message }}
                                         </div>
                                     @enderror
 
                                 </div>
 
-                            </div>
 
-                            <button type="submit" class="btn btn-primary w-100 py-3">
+                                <button type="submit" id="submit-consultation" class="btn btn-primary btn-lg w-100"
+                                    disabled>
+                                    Kirim Permintaan Konsultasi
+                                    <i class="bi bi-arrow-right ms-2"></i>
+                                </button>
 
-                                Kirim Permintaan Konsultasi
+                            </form>
 
-                            </button>
-
-                        </form>
+                        </div>
 
                     </div>
 
@@ -293,6 +320,24 @@
 
         </div>
 
-    </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const consentCheckbox = document.getElementById('consent');
+            const submitButton = document.getElementById('submit-consultation');
+
+            function updateSubmitButton() {
+                submitButton.disabled = !consentCheckbox.checked;
+            }
+
+            consentCheckbox.addEventListener('change', updateSubmitButton);
+
+            // Periksa kondisi awal checkbox
+            updateSubmitButton();
+
+        });
+    </script>
 
 @endsection
