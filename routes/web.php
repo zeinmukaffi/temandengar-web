@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PerformanceController;
 use App\Http\Controllers\Admin\PipelineController;
+use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ResourceController as AdminResourceController;
 use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\Auth\LoginController;
@@ -311,4 +312,23 @@ Route::middleware('auth')->group(function () {
         NotificationController::class,
         'markAllAsRead'
     ])->name('admin.notifications.read-all');
+
+    // ========================================
+    // COUNSELOR PROFILE
+    // ========================================
+
+    Route::get('/dashboard/profil', [
+        ProfileController::class,
+        'edit'
+    ])->name('admin.profile.edit');
+
+    Route::put('/dashboard/profil', [
+        ProfileController::class,
+        'update'
+    ])->name('admin.profile.update');
+
+    Route::delete('/dashboard/profil/photo', [
+        ProfileController::class,
+        'removePhoto'
+    ])->name('admin.profile.remove-photo');
 });

@@ -158,6 +158,7 @@
                 </div>
 
 
+
                 {{-- COUNSELOR PROFILE NAME --}}
 
                 <span class="small text-secondary d-none d-sm-inline">
@@ -165,6 +166,13 @@
                     {{ auth()->user()->name }}
 
                 </span>
+
+                <a href="{{ route('admin.profile.edit') }}" class="nav-link text-dark">
+
+                    <i class="bi bi-person-circle me-2"></i>
+                    Profil Saya
+
+                </a>
 
 
                 {{-- LOGOUT --}}
@@ -235,6 +243,7 @@
                         @endif
 
                     </a>
+
 
                     <a href="{{ route('admin.resources.index') }}" class="nav-link text-dark">
                         <i class="bi bi-book me-2"></i>
