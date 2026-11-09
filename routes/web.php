@@ -19,6 +19,8 @@ use App\Http\Controllers\Website\PageController;
 use App\Http\Controllers\Website\ResourceController as PublicResourceController;
 use App\Http\Controllers\Website\TestimonialController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\InternalScheduleReminderController;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 // use App\Http\Controllers\Admin\PerformanceController;
 
 // ========================================
@@ -349,3 +351,33 @@ Route::middleware('auth')->group(function () {
         ->middleware('throttle:5,1')
         ->name('admin.settings.password.update');
 });
+
+// ========================================
+// INTERNAL API - N8N SCHEDULE REMINDERS
+// ========================================
+
+Route::prefix('api/internal')
+    ->name('internal.')
+    ->group(function () {
+
+        // Get pending schedule reminders
+        Route::get(
+            '/schedule-reminders/due',
+            [InternalScheduleReminderController::class, 'due']
+        )
+            ->middleware('throttle:30,1')
+            ->name('schedule-reminders.due');
+
+
+        // Mark reminder as sent
+        Route::post(
+            '/schedule-reminders/{delivery}/sent',
+            [InternalScheduleReminderController::class, 'markSent']
+        )
+            ->middleware('throttle:60,1')
+            ->withoutMiddleware([
+                ValidateCsrfToken::class,
+            ])
+            ->name('schedule-reminders.sent');
+
+    });

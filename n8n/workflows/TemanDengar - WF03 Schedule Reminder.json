@@ -1,0 +1,204 @@
+{
+  "name": "TemanDengar - WF03 Schedule Reminder",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "1edda4a5-939c-4eaa-88a3-b32123a554f3",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:8000/api/internal/schedule-reminders/due",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "d8a02a87-a73c-43bc-81e7-a99a661b8668",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "h9v1deIbswpQUztN",
+          "name": "TemanDengar Internal API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "1bbf0cf6-bf5d-4a33-a2c8-4144d42cff68",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "fromEmail": "temandengar2026@gmail.com",
+        "toEmail": "={{ $json.data.recipient_email }}",
+        "subject": "={{\n    $json.data.reminder_type === '24h'\n    ? '[TemanDengar] Pengingat Konsultasi Besok'\n    : '[TemanDengar] Pengingat Konsultasi 1 Jam Lagi'\n}}",
+        "emailFormat": "text",
+        "text": "=\n{{\n'Halo ' + $json.data.recipient_name + ',\\n\\n' +\n\n(\n    $json.data.reminder_type === '24h'\n    ? 'Ini adalah pengingat bahwa jadwal konsultasimu akan berlangsung sekitar 24 jam lagi.'\n    : 'Ini adalah pengingat bahwa jadwal konsultasimu akan berlangsung sekitar 1 jam lagi.'\n) +\n\n'\\n\\nDETAIL KONSULTASI\\n\\n' +\n\n'Nomor Tiket: ' + $json.data.ticket_number + '\\n' +\n'Mahasiswa: ' + $json.data.student_name + '\\n' +\n'Konselor: ' + $json.data.counselor_name + '\\n' +\n'Tanggal dan Waktu: ' + $json.data.scheduled_at_label + '\\n' +\n'Metode: ' + $json.data.method_label + '\\n\\n' +\n\n(\n    $json.data.method === 'online'\n    ? 'Link Google Meet: ' +\n        ($json.data.meeting_link || 'Silakan periksa dashboard TemanDengar.') + '\\n'\n    : 'Lokasi: ' +\n        ($json.data.location || 'Silakan konfirmasi kepada konselor.') + '\\n'\n) +\n\n'\\nMohon pastikan kamu memperhatikan jadwal konsultasi tersebut.\\n\\n' +\n'Terima kasih.\\n\\n' +\n'TemanDengar Team\\n' +\n'Ruang aman untuk didengar, teman untuk bercerita.'\n}}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        640,
+        112
+      ],
+      "id": "3ecf41b2-d8da-43b6-98de-4b7e021c5381",
+      "name": "Send Email - Schedule Reminder",
+      "webhookId": "a1c44a2d-9d4d-4559-b9c6-f1a35bb30785",
+      "credentials": {
+        "smtp": {
+          "id": "ZWI4LQsm2lVyamKu",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{\n    'http://host.docker.internal:8000/api/internal/schedule-reminders/'\n    + $json.data.id\n    + '/sent'\n}}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        976,
+        16
+      ],
+      "id": "74a7af5d-f944-4ebe-a9ab-3c1c9a01c214",
+      "name": "Mark Schedule Reminder as Sent",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "h9v1deIbswpQUztN",
+          "name": "TemanDengar Internal API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        816,
+        16
+      ],
+      "id": "d4d0b12c-86e8-47ab-b5ee-58ec5317300e",
+      "name": "Merge"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send Email - Schedule Reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email - Schedule Reminder": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Mark Schedule Reminder as Sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "timezone": "Asia/Jakarta",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "995435a7-095e-4920-9587-1a4f86e7dcfc",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "73b8107a5e82e3910fe543244856ee9fff57e80e7ab9d21163b32e07b1853afa"
+  },
+  "nodeGroups": [],
+  "id": "A1jk6J8FnMrNtQGt",
+  "tags": []
+}
