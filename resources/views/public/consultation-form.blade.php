@@ -82,18 +82,21 @@
 
                                     <div class="col-md-6 mb-3">
 
-                                        <label class="form-label">Email</label>
+                                        <label class="form-label">
+                                            Email Aktif *
+                                        </label>
 
                                         <input type="email" name="email"
                                             class="form-control @error('email') is-invalid @enderror"
-                                            value="{{ old('email') }}" placeholder="nama@email.com">
+                                            value="{{ old('email') }}" placeholder="nama@email.com" required>
 
                                         @error('email')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            <div class="invalid-feedback">
+                                                {{ $message }}
+                                            </div>
                                         @enderror
 
                                     </div>
-
 
                                     <div class="col-md-6 mb-3">
 
@@ -114,12 +117,63 @@
                                 </div>
 
 
+
                                 <hr class="my-4">
+                                {{-- <hr class="my-4"> --}}
+
+                                {{-- COUNSELOR PREFERENCE --}}
+
+                                <div class="mb-4">
+
+                                    <label class="form-label fw-semibold">
+                                        Pilih Konselor
+                                    </label>
+
+                                    <p class="text-secondary small">
+                                        Kamu dapat memilih konselor yang ingin diajak berdiskusi.
+                                        Pilihan ini merupakan preferensi dan akan dikonfirmasi
+                                        setelah pengajuan ditinjau.
+                                    </p>
+
+                                    <select name="preferred_counselor_id"
+                                        class="form-select @error('preferred_counselor_id') is-invalid @enderror">
+
+                                        <option value="">
+                                            Tidak ada preferensi konselor
+                                        </option>
+
+                                        @foreach ($counselors as $counselor)
+                                            <option value="{{ $counselor->id }}" @selected(old('preferred_counselor_id') == $counselor->id)>
+
+                                                {{ $counselor->name }}
+                                                — {{ $counselor->headline ?: 'Konselor Sebaya' }}
+
+                                            </option>
+                                        @endforeach
+
+                                    </select>
+
+                                    @error('preferred_counselor_id')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+
+                                    @if ($counselors->isEmpty())
+                                        <small class="text-secondary">
+                                            Saat ini belum ada konselor yang membuka penerimaan
+                                            permintaan konsultasi. Pengajuan tanpa preferensi
+                                            tetap dapat dikirim.
+                                        </small>
+                                    @endif
+
+                                </div>
 
 
                                 <h5 class="fw-bold mb-1">
                                     Kebutuhan Konsultasi
                                 </h5>
+
 
                                 <p class="text-muted-custom small mb-4">
                                     Pilih topik dan ceritakan hal yang ingin dibicarakan.
@@ -307,24 +361,28 @@
                                 </div>
 
 
-                                <div class="form-check mb-4">
+                                <div class="bg-light rounded-4 p-3 mb-3">
 
-                                    <input type="checkbox" name="consent" value="1" id="consent"
-                                        class="form-check-input @error('consent') is-invalid @enderror"
-                                        @checked(old('consent')) required>
+                                    <div class="form-check">
 
-                                    <label class="form-check-label small" for="consent">
+                                        <input type="checkbox" name="consent" value="1" id="consent"
+                                            class="form-check-input @error('consent') is-invalid @enderror"
+                                            @checked(old('consent')) required>
 
-                                        Saya telah membaca informasi privasi dan menyetujui
-                                        penggunaan data untuk pengelolaan permintaan konsultasi.
+                                        <label for="consent" class="form-check-label fw-semibold">
 
-                                    </label>
+                                            Saya telah membaca informasi privasi dan menyetujui
+                                            penggunaan data untuk pengelolaan permintaan konsultasi.
 
-                                    @error('consent')
-                                        <div class="text-danger small">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
+                                        </label>
+
+                                        @error('consent')
+                                            <div class="text-danger small mt-2">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+
+                                    </div>
 
                                 </div>
 

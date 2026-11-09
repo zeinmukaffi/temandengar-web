@@ -334,8 +334,8 @@ Route::middleware('auth')->group(function () {
     ])->name('admin.profile.remove-photo');
 
     // ========================================
-// ACCOUNT SETTINGS
-// ========================================
+    // ACCOUNT SETTINGS
+    // ========================================
 
     Route::get('/dashboard/pengaturan', [
         AccountSettingsController::class,

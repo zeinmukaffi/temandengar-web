@@ -57,6 +57,11 @@ class ProfileController extends Controller
             ],
 
             'is_public_profile' => ['sometimes', 'boolean'],
+
+            'is_accepting_consultations' => [
+                'sometimes',
+                'boolean',
+            ],
         ]);
 
         $validated['specialties'] =
@@ -64,6 +69,9 @@ class ProfileController extends Controller
 
         $validated['is_public_profile'] =
             $request->boolean('is_public_profile');
+
+        $validated['is_accepting_consultations'] =
+            $request->boolean('is_accepting_consultations');
 
         unset($validated['photo']);
 

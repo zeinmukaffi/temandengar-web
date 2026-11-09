@@ -1,0 +1,110 @@
+{
+  "name": "TemanDengar - WF01 New Consultation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "temandengar-new-consultation",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "081bbb48-e59e-48d7-9199-6ee88eb55d2a",
+      "name": "Webhook",
+      "webhookId": "7b403b88-c911-4ff6-a22b-f094a8a4b22e",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "h9v1deIbswpQUztN",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "temandengar2026@gmail.com",
+        "toEmail": "={{ $json.body.data.student.email }}",
+        "subject": "={{ '[TemanDengar] Pengajuan Diterima - ' + $json.body.data.ticket_number }}",
+        "emailFormat": "text",
+        "text": "=Halo {{ $json.body.data.student.display_name }},\n\nTerima kasih telah mempercayai TemanDengar sebagai ruang untuk berbagi cerita.\n\nKami ingin menginformasikan bahwa pengajuan konsultasimu sudah berhasil kami terima.\n\nDETAIL PENGAJUAN\nNomor Tiket:\n{{ $json.body.data.ticket_number }}\nTopik:\n{{ $json.body.data.topic_label }}\nMetode Konsultasi:\n{{ $json.body.data.preferred_method_label }}\nPreferensi Konselor:\n{{ $json.body.data.preferred_counselor_name || 'Tidak ada preferensi' }}\nStatus:\nMenunggu Peninjauan\n\nSelanjutnya, konselor akan meninjau pengajuanmu dan menghubungimu melalui email untuk membahas langkah berikutnya.\n\nMohon simpan nomor tiket tersebut sebagai referensi.\n\nTerima kasih!\nTemanDengar Team\nRuang aman untuk didengar, teman untuk bercerita.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        240,
+        -144
+      ],
+      "id": "53348787-2824-44ee-8b7f-c4b09290ecdc",
+      "name": "Send Email - Student Confirmation",
+      "webhookId": "3e3c9948-de4b-483a-9250-dce9ef583e7e",
+      "credentials": {
+        "smtp": {
+          "id": "ZWI4LQsm2lVyamKu",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "=temandengar2026@gmail.com",
+        "toEmail": "={{ $json.body.data.counselor.email }}",
+        "subject": "={{ '[TemanDengar] Pengajuan Konsultasi Baru - ' + $json.body.data.ticket_number }}",
+        "emailFormat": "text",
+        "text": "=Halo {{ $json.body.data.counselor.name }},\n\nTerdapat pengajuan konsultasi baru melalui website TemanDengar.\n\nINFORMASI PENGAJUAN\nNomor Tiket:\n{{ $json.body.data.ticket_number }}\nNama Tampilan Mahasiswa:\n{{ $json.body.data.student.display_name }}\nEmail Mahasiswa:\n{{ $json.body.data.student.email }}\nTopik:\n{{ $json.body.data.topic_label }}\nMetode Konsultasi:\n{{ $json.body.data.preferred_method_label }}\n\nSTATUS PREFERENSI KONSELOR\n{{ $json.body.data.counselor.notification_type === 'preferred_counselor'\n? 'Mahasiswa memilih Anda sebagai konselor preferensi. Penugasan masih perlu dikonfirmasi.'\n: 'Mahasiswa tidak memilih konselor tertentu. Silakan tinjau dan tentukan penugasan.' }}\n\nStatus Pengajuan:\nPending\n\nSilakan masuk ke dashboard TemanDengar untuk meninjau pengajuan dan melakukan tindak lanjut.\n\nTemanDengar System Notification",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        240,
+        112
+      ],
+      "id": "4771a221-93ea-44d2-9e97-459aa08084dc",
+      "name": "Send Email - Counselor Notification",
+      "webhookId": "d1d96af9-22a8-48d6-8cb7-7a02b9a4de3f",
+      "credentials": {
+        "smtp": {
+          "id": "ZWI4LQsm2lVyamKu",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send Email - Student Confirmation",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send Email - Counselor Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "d531e16c-39fe-41b5-aed1-d6084cdb7024",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "73b8107a5e82e3910fe543244856ee9fff57e80e7ab9d21163b32e07b1853afa"
+  },
+  "nodeGroups": [],
+  "id": "etTwJEe6bm7XOFaO",
+  "tags": []
+}

@@ -346,6 +346,31 @@
 
                             </div>
 
+                            <div class="bg-soft rounded-4 p-3 mb-3">
+
+                                <input type="hidden" name="is_accepting_consultations" value="0">
+
+                                <div class="form-check form-switch">
+
+                                    <input type="checkbox" name="is_accepting_consultations"
+                                        id="is_accepting_consultations" value="1" class="form-check-input"
+                                        @checked(old('is_accepting_consultations', $user->is_accepting_consultations))>
+
+                                    <label for="is_accepting_consultations" class="form-check-label fw-semibold">
+
+                                        Terima Permintaan Konsultasi
+
+                                    </label>
+
+                                </div>
+
+                                <small class="text-secondary">
+                                    Jika dinonaktifkan, profilmu tidak muncul sebagai pilihan
+                                    konselor pada formulir pengajuan konsultasi.
+                                </small>
+
+                            </div>
+
                             <small class="text-secondary">
                                 Jika dinonaktifkan, profil tidak dapat diakses
                                 melalui direktori konselor publik.

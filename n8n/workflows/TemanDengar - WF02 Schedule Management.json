@@ -1,0 +1,328 @@
+{
+  "name": "TemanDengar - WF02 Schedule Management",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "temandengar-schedule-events",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "114018aa-4d8b-4122-8d20-8c6ae265cadb",
+      "name": "Webhook",
+      "webhookId": "0ce0913d-3ac6-419b-b982-d3ecadc36b64",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "h9v1deIbswpQUztN",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.event_type }}",
+                    "rightValue": "consultation.scheduled",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "d4b7828a-b1d7-40e5-972e-4db5c548f8ed"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "5a77bdbc-7e55-46a1-a9ba-531ef480f70a",
+                    "leftValue": "={{ $json.body.event_type }}",
+                    "rightValue": "consultation.rescheduled",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "e31aea84-57c6-46e6-b6de-e8cf2cf68cc4",
+                    "leftValue": "={{ $json.body.event_type }}",
+                    "rightValue": "consultation.cancelled",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        0
+      ],
+      "id": "775785ea-b773-4959-b1b3-255f344c79b3",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "fromEmail": "temandengar2026@gmail.com",
+        "toEmail": "={{ $json.body.data.student.email }}",
+        "subject": "[TemanDengar] Jadwal Konsultasimu Telah Ditetapkan",
+        "emailFormat": "text",
+        "text": "=Halo {{ $json.body.data.student.display_name }},\n\nKabar baik! Permintaan konsultasimu telah ditinjau dan jadwal konsultasi sudah ditetapkan.\n\nDETAIL KONSULTASI\nNomor Tiket:\n{{ $json.body.data.ticket_number }}\nKonselor:\n{{ $json.body.data.counselor.name }}\nTanggal dan Waktu:\n{{ $json.body.data.schedule.scheduled_at_label }}\nMetode:\n{{ $json.body.data.schedule.method_label }}\nSilakan catat jadwal tersebut.\n\nJika terdapat informasi tambahan mengenai pelaksanaan\nkonsultasi, konselor akan menyampaikannya melalui email.\n\nTerima kasih!\nTemanDengar Team",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        400,
+        -240
+      ],
+      "id": "2e9c66a9-e73d-4212-9a3d-dd8d646d7f5b",
+      "name": "Student Schedule Created",
+      "webhookId": "2a7157da-153c-41f1-b4cb-054f359e69f6",
+      "credentials": {
+        "smtp": {
+          "id": "ZWI4LQsm2lVyamKu",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "temandengar2026@gmail.com",
+        "toEmail": "={{ $json.body.data.counselor.email }}",
+        "subject": "={{ '[TemanDengar] Jadwal Baru - ' + $json.body.data.ticket_number }}",
+        "emailFormat": "text",
+        "text": "=Halo {{ $json.body.data.counselor.name }},\n\nJadwal konsultasi baru berhasil dibuat.\n\nDETAIL KONSULTASI\nNomor Tiket:\n{{ $json.body.data.ticket_number }}\nMahasiswa:\n{{ $json.body.data.student.display_name }}\nEmail Mahasiswa:\n{{ $json.body.data.student.email }}\nTanggal dan Waktu:\n{{ $json.body.data.schedule.scheduled_at_label }}\nMetode:\n{{ $json.body.data.schedule.method_label }}\n\nSilakan periksa dashboard TemanDengar untuk\nmelihat detail permintaan konsultasi.\n\nTemanDengar System Notification",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        544,
+        -128
+      ],
+      "id": "ff15a5ab-a04b-4cfd-921f-faa41f153d2c",
+      "name": "Counselor Schedule Created",
+      "webhookId": "2a7157da-153c-41f1-b4cb-054f359e69f6",
+      "credentials": {
+        "smtp": {
+          "id": "ZWI4LQsm2lVyamKu",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "temandengar2026@gmail.com",
+        "toEmail": "={{ $json.body.data.student.email }}",
+        "subject": "={{ '[TemanDengar] Perubahan Jadwal - ' + $json.body.data.ticket_number }}",
+        "html": "=Halo {{ $json.body.data.student.display_name }},\n\nKami ingin menginformasikan bahwa jadwal konsultasimu mengalami perubahan.\n\nJADWAL TERBARU\nNomor Tiket:\n{{ $json.body.data.ticket_number }}\nKonselor:\n{{ $json.body.data.counselor.name }}\nTanggal dan Waktu Baru:\n{{ $json.body.data.schedule.scheduled_at_label }}\nMetode:\n{{ $json.body.data.schedule.method_label }}\n\nMohon perhatikan perubahan jadwal tersebut.\n\nTerima kasih!\nTemanDengar Team",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        656,
+        48
+      ],
+      "id": "b92c0cdf-226d-46da-ba95-e9e466b00a55",
+      "name": "Student Schedule Updated",
+      "webhookId": "4490d185-0886-4f7c-ba6b-652aeddf589e",
+      "credentials": {
+        "smtp": {
+          "id": "ZWI4LQsm2lVyamKu",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "temandengar2026@gmail.com",
+        "toEmail": "={{ $json.body.data.counselor.email }}",
+        "subject": "={{ '[TemanDengar] Jadwal Diperbarui - ' + $json.body.data.ticket_number }}",
+        "emailFormat": "text",
+        "text": "=Halo {{ $json.body.data.counselor.name }},\n\nJadwal konsultasi berikut telah diperbarui.\nNomor Tiket:\n{{ $json.body.data.ticket_number }}\nMahasiswa:\n{{ $json.body.data.student.display_name }}\nJadwal Terbaru:\n{{ $json.body.data.schedule.scheduled_at_label }}\nMetode:\n{{ $json.body.data.schedule.method_label }}\n\nSilakan periksa dashboard TemanDengar.\nTemanDengar System Notification",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        736,
+        208
+      ],
+      "id": "c1f2b5f7-ff9e-457f-8f78-3938522694de",
+      "name": "Counselor Schedule Updated",
+      "webhookId": "25264fd2-5ed9-4081-8eeb-bc1f69792535",
+      "credentials": {
+        "smtp": {
+          "id": "ZWI4LQsm2lVyamKu",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "temandengar@gmail.com",
+        "toEmail": "={{ $json.body.data.student.email }}",
+        "subject": "={{ '[TemanDengar] Informasi Pembatalan Jadwal - ' + $json.body.data.ticket_number }}",
+        "html": "=Halo {{ $json.body.data.student.display_name }},\n\nKami ingin menginformasikan bahwa jadwal konsultasimu telah dibatalkan.\n\nINFORMASI KONSULTASI\nNomor Tiket:\n{{ $json.body.data.ticket_number }}\nKonselor:\n{{ $json.body.data.counselor.name }}\nJadwal Sebelumnya:\n{{ $json.body.data.schedule.scheduled_at_label }}\n\nPembatalan ini telah dicatat dalam sistem TemanDengar.\n\nSilakan hubungi konselor melalui email apabila ingin mendiskusikan penjadwalan berikutnya.\n\nTerima kasih atas pengertiannya.\nTemanDengar Team",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        528,
+        304
+      ],
+      "id": "966e4c45-f5d6-469c-b321-c340637cb764",
+      "name": "Student Schedule Cancelled",
+      "webhookId": "7df0f829-87e3-4a50-b145-0beb91614b16",
+      "credentials": {
+        "smtp": {
+          "id": "ZWI4LQsm2lVyamKu",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "temandengar2026@gmail.com",
+        "toEmail": "={{ $json.body.data.counselor.email }}",
+        "subject": "={{ '[TemanDengar] Jadwal Dibatalkan - ' + $json.body.data.ticket_number }}",
+        "emailFormat": "text",
+        "text": "=Halo {{ $json.body.data.counselor.name }},\n\nJadwal konsultasi berikut telah dibatalkan.\nNomor Tiket:\n{{ $json.body.data.ticket_number }}\nMahasiswa:\n{{ $json.body.data.student.display_name }}\nJadwal Sebelumnya:\n{{ $json.body.data.schedule.scheduled_at_label }}\n\nStatus pembatalan telah tercatat pada sistem.\nSilakan periksa dashboard TemanDengar.\n\nTemanDengar System Notification",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        352,
+        320
+      ],
+      "id": "c1274685-d5b7-4e75-af73-ebc6a37c644f",
+      "name": "Counselor Schedule Cancelled",
+      "webhookId": "e059fc1c-8eb8-4a82-b8b1-572718bf0bcc",
+      "credentials": {
+        "smtp": {
+          "id": "ZWI4LQsm2lVyamKu",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Student Schedule Created",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Counselor Schedule Created",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Student Schedule Updated",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Counselor Schedule Updated",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Student Schedule Cancelled",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Counselor Schedule Cancelled",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "99339f7c-7d10-4fca-be39-664314e891f9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "73b8107a5e82e3910fe543244856ee9fff57e80e7ab9d21163b32e07b1853afa"
+  },
+  "nodeGroups": [],
+  "id": "VfLkEJApHr3GnKTD",
+  "tags": []
+}

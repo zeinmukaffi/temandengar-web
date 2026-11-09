@@ -31,6 +31,7 @@ class User extends Authenticatable
         'specialties',
         'photo_path',
         'is_public_profile',
+        'is_accepting_consultations',
     ];
 
     /**
@@ -55,6 +56,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'specialties' => 'array',
             'is_public_profile' => 'boolean',
+            'is_accepting_consultations' => 'boolean',
         ];
     }
 

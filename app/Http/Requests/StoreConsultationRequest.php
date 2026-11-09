@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreConsultationRequest extends FormRequest
 {
@@ -67,6 +68,14 @@ class StoreConsultationRequest extends FormRequest
             'ai_processing_consent' => [
                 'sometimes',
                 'boolean',
+            ],
+            'preferred_counselor_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('users', 'id')->where(function ($query) {
+                    $query->where('is_public_profile', true)
+                        ->where('is_accepting_consultations', true);
+                }),
             ],
         ];
     }

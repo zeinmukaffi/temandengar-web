@@ -40,6 +40,8 @@ return [
         'webhook_url' => env('N8N_WEBHOOK_URL'),
         'webhook_token' => env('N8N_WEBHOOK_TOKEN'),
         'timeout' => (int) env('N8N_TIMEOUT', 5),
+        'counselor_inbox' => env('N8N_COUNSELOR_INBOX'),
+        'schedule_webhook_url' => env('N8N_SCHEDULE_WEBHOOK_URL'),
     ],
 
     'hermes' => [

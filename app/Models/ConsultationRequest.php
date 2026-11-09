@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ConsultationRequest extends Model
 {
@@ -25,6 +27,7 @@ class ConsultationRequest extends Model
         'consent_at',
         'ai_processing_consent',
         'ai_processing_consented_at',
+        'preferred_counselor_id',
     ];
 
     protected function casts(): array
@@ -50,5 +53,13 @@ class ConsultationRequest extends Model
     public function activityLogs(): HasMany
     {
         return $this->hasMany(ActivityLog::class, 'request_id');
+    }
+
+    public function preferredCounselor(): BelongsTo
+    {
+        return $this->belongsTo(
+            User::class,
+            'preferred_counselor_id'
+        );
     }
 }
