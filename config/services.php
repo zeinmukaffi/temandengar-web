@@ -43,6 +43,7 @@ return [
         'schedule_webhook_url' => env('N8N_SCHEDULE_WEBHOOK_URL'),
         'internal_api_token' => env('N8N_INTERNAL_API_TOKEN'),
         'timeout' => (int) env('N8N_TIMEOUT', 5),
+        'feedback_webhook_url' => env('N8N_FEEDBACK_WEBHOOK_URL'),
     ],
 
     'hermes' => [

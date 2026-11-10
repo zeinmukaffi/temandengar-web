@@ -1,0 +1,410 @@
+{
+  "name": "TemanDengar - WF04 Feedback Follow-up",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "temandengar-feedback-events",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "9269fb75-21eb-4126-875e-84b5ab82e52f",
+      "name": "Webhook",
+      "webhookId": "84b194e7-5a77-464f-93a2-72547c8e0d18",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "oZiW7Tp8c1UeltuW",
+          "name": "TemanDengar Webhook Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.event_type }}",
+                    "rightValue": "consultation.completed",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "89344296-291f-4c86-b886-31586f52eb50"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "0f887230-a6bc-4507-9d16-3327010aa310",
+                    "leftValue": "={{ $json.body.event_type }}",
+                    "rightValue": "consultation.feedback_submitted",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        0
+      ],
+      "id": "3326c942-84e6-4870-95c2-5f693f07dcaa",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "fromEmail": "temandengar2026@gmail.com",
+        "toEmail": "={{ $json.body.data.student.email }}",
+        "subject": "={{ '[TemanDengar] Bagikan Pengalaman Konsultasimu - ' + $json.body.data.ticket_number }}",
+        "emailFormat": "text",
+        "text": "={{\n'Halo ' + $json.body.data.student.display_name + ',\\n\\n' +\n\n'Terima kasih telah mempercayai TemanDengar sebagai ruang untuk berbagi cerita.\\n\\n' +\n\n'Kami ingin mengajakmu memberikan feedback mengenai sesi konsultasi yang telah kamu jalani bersama konselor sebaya.\\n\\n' +\n\n'DETAIL KONSULTASI\\n\\n' +\n\n'Nomor Tiket: ' + $json.body.data.ticket_number + '\\n' +\n\n'Konselor: ' + $json.body.data.counselor.name + '\\n\\n' +\n\n'Feedback yang kamu berikan sangat berarti untuk membantu kami meningkatkan kualitas layanan TemanDengar.\\n\\n' +\n\n'ISI FEEDBACK DI SINI:\\n' +\n\n$json.body.data.feedback.url + '\\n\\n' +\n\n'Tautan ini berlaku sampai ' +\nnew Date($json.body.data.feedback.expires_at).toLocaleDateString('id-ID') +\n'.\\n\\n' +\n\n'Feedback bersifat pribadi dan tidak akan dipublikasikan tanpa persetujuanmu.\\n\\n' +\n\n'Terima kasih telah meluangkan waktu.\\n\\n' +\n\n'Salam hangat,\\n' +\n'TemanDengar Team\\n' +\n'Ruang aman untuk didengar, teman untuk bercerita.'\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        448,
+        -96
+      ],
+      "id": "e2c62d06-7a2b-4b82-a0ac-80a87038f1fd",
+      "name": "Send Email - Feedback Invitation",
+      "webhookId": "9216ed7e-f42a-4399-ba1e-2f84b8bda78e",
+      "credentials": {
+        "smtp": {
+          "id": "ZWI4LQsm2lVyamKu",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "temandengar2026@gmail.com",
+        "toEmail": "={{ $json.body.data.counselor.email }}",
+        "subject": "={{ '[TemanDengar] Feedback Baru - ' + $json.body.data.ticket_number }}",
+        "emailFormat": "text",
+        "text": "={{\n'Halo ' + $json.body.data.counselor.name + ',\\n\\n' +\n\n'Seorang mahasiswa telah mengirimkan feedback untuk sesi konsultasi yang telah Anda tangani.\\n\\n' +\n\n'DETAIL FEEDBACK\\n\\n' +\n\n'Nomor Tiket: ' + $json.body.data.ticket_number + '\\n' +\n\n'Mahasiswa: ' + $json.body.data.student.display_name + '\\n' +\n\n'Rating: ' + $json.body.data.rating + '/5\\n\\n' +\n\n'Silakan masuk ke dashboard TemanDengar untuk melihat detail feedback.\\n\\n' +\n\n'Feedback tetap bersifat internal dan perlu melalui proses moderasi sebelum dapat dipublikasikan sebagai testimonial.\\n\\n' +\n\n'TemanDengar System Notification'\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        448,
+        96
+      ],
+      "id": "b94e6302-5bc3-44ff-8b65-34a9eff9d865",
+      "name": "Send Email - Feedback Received",
+      "webhookId": "67c66652-c2bb-4d02-806e-52e9fa426ff3",
+      "credentials": {
+        "smtp": {
+          "id": "ZWI4LQsm2lVyamKu",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{\n    'http://host.docker.internal:8000/api/internal/feedback-reminders/'\n    + $('Webhook').first().json.body.data.feedback_reminder_delivery_id\n    + '/invitation-sent'\n}}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        672,
+        -96
+      ],
+      "id": "89c6cfd7-e97e-4c86-a1c7-bdfd44ff7749",
+      "name": "Mark Feedback Invitation as Sent",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "h9v1deIbswpQUztN",
+          "name": "TemanDengar Internal API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        272
+      ],
+      "id": "e5626a6d-1f79-4fda-8160-2d74fa570f63",
+      "name": "Feedback Reminder Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:8000/api/internal/feedback-reminders/due",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        272
+      ],
+      "id": "13422085-6290-4190-9e24-a755d646e861",
+      "name": "Get Due Feedback Reminders",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "h9v1deIbswpQUztN",
+          "name": "TemanDengar Internal API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "=data",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        448,
+        272
+      ],
+      "id": "96f3944d-6016-432d-901a-d428b8140d5d",
+      "name": "Split Feedback Reminders"
+    },
+    {
+      "parameters": {
+        "fromEmail": "temandengar2026@gmail.com",
+        "toEmail": "={{ $json.data.recipient_email }}",
+        "subject": "={{ '[TemanDengar] Pengingat Pengisian Feedback Konsultasi - ' + $json.data.ticket_number }}",
+        "emailFormat": "text",
+        "text": "=\n{{\n'Halo ' + $json.data.recipient_name + ',\\n\\n' +\n\n'Kami ingin mengingatkanmu bahwa kamu belum mengisi feedback untuk sesi konsultasi yang telah kamu jalani bersama TemanDengar.\\n\\n' +\n\n'DETAIL REFERENSI\\n\\n' +\n\n'Nomor Tiket: ' + $json.data.ticket_number + '\\n\\n' +\n\n'Masukanmu sangat berarti untuk membantu kami meningkatkan kualitas layanan dan pengalaman konsultasi mahasiswa.\\n\\n' +\n\n'ISI FEEDBACK SEKARANG:\\n' +\n\n$json.data.feedback_url + '\\n\\n' +\n\n'Tautan feedback berlaku sampai ' +\nnew Date($json.data.expires_at).toLocaleDateString('id-ID') +\n'.\\n\\n' +\n\n'Kami menghargai waktu dan kesediaanmu untuk memberikan penilaian.\\n\\n' +\n\n'Terima kasih,\\n' +\n\n'TemanDengar Team\\n' +\n\n'Ruang aman untuk didengar, teman untuk bercerita.'\n}}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        720,
+        384
+      ],
+      "id": "b59374da-dd40-4a35-90ec-9d23035a08bd",
+      "name": "Send Email - Feedback Reminder",
+      "webhookId": "b3dd0a25-822d-4dc6-a2e2-beb2b122272b",
+      "credentials": {
+        "smtp": {
+          "id": "ZWI4LQsm2lVyamKu",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        944,
+        288
+      ],
+      "id": "4d644a85-a7a3-4d84-8fde-509f25480245",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{\n    'http://host.docker.internal:8000/api/internal/feedback-reminders/'\n    + $json.data.id\n    + '/sent'\n}}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1168,
+        288
+      ],
+      "id": "bb117591-6e81-4b0f-8b69-38bfb23a4e1e",
+      "name": "Mark Feedback Reminder as Sent",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "h9v1deIbswpQUztN",
+          "name": "TemanDengar Internal API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Send Email - Feedback Invitation",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Email - Feedback Received",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email - Feedback Invitation": {
+      "main": [
+        [
+          {
+            "node": "Mark Feedback Invitation as Sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Feedback Reminder Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Due Feedback Reminders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Due Feedback Reminders": {
+      "main": [
+        [
+          {
+            "node": "Split Feedback Reminders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Feedback Reminders": {
+      "main": [
+        [
+          {
+            "node": "Send Email - Feedback Reminder",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email - Feedback Reminder": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Mark Feedback Reminder as Sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "timezone": "Asia/Jakarta",
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionTimeout": -1,
+    "availableInMCP": false
+  },
+  "versionId": "d16757bc-d0d5-4477-8e82-efe8443f8cec",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "73b8107a5e82e3910fe543244856ee9fff57e80e7ab9d21163b32e07b1853afa"
+  },
+  "nodeGroups": [],
+  "id": "i3EJPSJLle50G7Yy",
+  "tags": []
+}

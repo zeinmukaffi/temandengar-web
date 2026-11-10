@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Website;
 
 use App\Http\Controllers\Controller;
 use App\Models\Consultation;
-use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
-use Illuminate\Support\Facades\URL;
+use App\Models\FeedbackReminderDelivery;
+use App\Services\N8nWebhookService;
 use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
+use Illuminate\View\View;
 
 class FeedbackController extends Controller
 {
@@ -110,8 +113,11 @@ class FeedbackController extends Controller
 
         }
 
-        // Simpan feedback, baik private maupun publik
-        $consultation->feedback()->create([
+        // ========================================
+        // STORE CONSULTATION FEEDBACK
+        // ========================================
+
+        $feedback = $consultation->feedback()->create([
 
             'display_name' => $validated['display_name'] ?? 'Mahasiswa',
 
@@ -127,6 +133,107 @@ class FeedbackController extends Controller
             'published_at' => null,
 
         ]);
+
+        // ========================================
+        // CANCEL PENDING FEEDBACK REMINDER
+        // ========================================
+
+                // Mahasiswa sudah mengirim feedback.
+        // Reminder yang belum terkirim tidak diperlukan lagi.
+
+        FeedbackReminderDelivery::query()
+            ->where('consultation_id', $consultation->id)
+            ->whereIn('status', [
+                'awaiting_invitation',
+                'pending',
+            ])
+            ->update([
+                'status' => 'skipped',
+            ]);
+
+
+        // ========================================
+// WF-04: FEEDBACK SUBMITTED EVENT
+// ========================================
+
+        // Ambil data mahasiswa dan konselor
+        $consultation->loadMissing([
+            'consultationRequest',
+            'counselor',
+        ]);
+
+        $consultationRequest = $consultation->consultationRequest;
+
+        $counselor = $consultation->counselor;
+
+
+        // URL webhook WF-04
+        $feedbackWebhookUrl = config(
+            'services.n8n.feedback_webhook_url'
+        );
+
+
+        // Pastikan data dan penerima tersedia
+        if (
+            $consultationRequest &&
+            $counselor &&
+            filled($counselor->email) &&
+            filled($feedbackWebhookUrl)
+        ) {
+
+            $payload = [
+
+                'feedback_id' => $feedback->id,
+
+                'consultation_id' => $consultation->id,
+
+                'ticket_number' => $consultationRequest->ticket_number,
+
+                'student' => [
+
+                    'display_name' => $consultationRequest->alias,
+
+                ],
+
+                'counselor' => [
+
+                    'name' => $counselor->name,
+
+                    'email' => $counselor->email,
+
+                ],
+
+                'rating' => $feedback->rating,
+
+                'submitted_at' => $feedback->created_at
+                    ? $feedback->created_at->toIso8601String()
+                    : now()->toIso8601String(),
+
+            ];
+
+
+            // Kirim event ke n8n
+            app(N8nWebhookService::class)->send(
+
+                'consultation.feedback_submitted',
+
+                $payload,
+
+                $feedbackWebhookUrl
+
+            );
+
+        } else {
+
+            Log::warning(
+                'Feedback submitted event was not dispatched.',
+                [
+                    'feedback_id' => $feedback->id,
+                    'consultation_id' => $consultation->id,
+                ]
+            );
+
+        }
 
         app(\App\Services\CounselorNotificationService::class)
             ->notifyCounselors(

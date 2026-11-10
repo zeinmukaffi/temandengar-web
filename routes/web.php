@@ -10,6 +10,8 @@ use App\Http\Controllers\Admin\PipelineController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ResourceController as AdminResourceController;
 use App\Http\Controllers\Admin\ScheduleController;
+use App\Http\Controllers\Api\InternalFeedbackReminderController;
+use App\Http\Controllers\Api\InternalScheduleReminderController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Website\ConsultationRequestController;
 use App\Http\Controllers\Website\CounselorController as PublicCounselorController;
@@ -18,9 +20,8 @@ use App\Http\Controllers\Website\HomeController;
 use App\Http\Controllers\Website\PageController;
 use App\Http\Controllers\Website\ResourceController as PublicResourceController;
 use App\Http\Controllers\Website\TestimonialController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\InternalScheduleReminderController;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
+use Illuminate\Support\Facades\Route;
 // use App\Http\Controllers\Admin\PerformanceController;
 
 // ========================================
@@ -379,5 +380,56 @@ Route::prefix('api/internal')
                 ValidateCsrfToken::class,
             ])
             ->name('schedule-reminders.sent');
+
+    });
+
+// ========================================
+// INTERNAL API - N8N FEEDBACK REMINDERS
+// ========================================
+
+Route::prefix('api/internal/feedback-reminders')
+    ->name('internal.feedback-reminders.')
+    ->group(function () {
+
+        // Mark invitation email as successfully sent
+        Route::post(
+            '/{delivery}/invitation-sent',
+            [
+                InternalFeedbackReminderController::class,
+                'markInvitationSent'
+            ]
+        )
+            ->middleware('throttle:60,1')
+            ->withoutMiddleware([
+                ValidateCsrfToken::class,
+            ])
+            ->name('invitation-sent');
+
+
+        // Get due feedback reminders
+        Route::get(
+            '/due',
+            [
+                InternalFeedbackReminderController::class,
+                'due'
+            ]
+        )
+            ->middleware('throttle:30,1')
+            ->name('due');
+
+
+        // Mark reminder email as sent
+        Route::post(
+            '/{delivery}/sent',
+            [
+                InternalFeedbackReminderController::class,
+                'markSent'
+            ]
+        )
+            ->middleware('throttle:60,1')
+            ->withoutMiddleware([
+                ValidateCsrfToken::class,
+            ])
+            ->name('sent');
 
     });

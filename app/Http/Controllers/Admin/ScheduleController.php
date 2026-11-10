@@ -3,19 +3,20 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\Consultation;
 use App\Models\ConsultationRequest;
-use App\Models\ActivityLog;
-use App\Services\N8nWebhookService;
+use App\Models\FeedbackReminderDelivery;
 use App\Services\CounselorNotificationService;
-
-use Illuminate\Http\Request;
+use App\Services\N8nWebhookService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Carbon;
+use Illuminate\View\View;
 
 class ScheduleController extends Controller
 {
@@ -372,14 +373,22 @@ class ScheduleController extends Controller
     }
 
 
+
+
     /**
      * Mark consultation as completed.
      *
-     * External feedback automation will be handled by WF-04.
+     * WF-04:
+     * Automatically send feedback invitation
+     * to student through n8n.
      */
     public function complete(
         Consultation $consultation
     ): RedirectResponse {
+
+        // ========================================
+        // VALIDATE CONSULTATION STATUS
+        // ========================================
 
         if ($consultation->session_status !== 'scheduled') {
 
@@ -390,8 +399,13 @@ class ScheduleController extends Controller
         }
 
 
+        // ========================================
+        // DATABASE TRANSACTION
+        // ========================================
+
         DB::transaction(function () use ($consultation) {
 
+            // Update consultation status
             $consultation->update([
 
                 'session_status' => 'completed',
@@ -400,12 +414,14 @@ class ScheduleController extends Controller
 
             ]);
 
+            // Update consultation request status
             $consultation->consultationRequest()->update([
 
                 'status' => 'completed',
 
             ]);
 
+            // Record activity
             ActivityLog::create([
 
                 'user_id' => auth()->id(),
@@ -421,7 +437,26 @@ class ScheduleController extends Controller
         });
 
 
+        // ========================================
+        // LOAD RELATED DATA
+        // ========================================
+
+        $consultation->refresh();
+
+        $consultation->load([
+            'consultationRequest',
+            'counselor',
+        ]);
+
+        $student = $consultation->consultationRequest;
+
+        $counselor = $consultation->counselor;
+
+
+        // ========================================
         // INTERNAL NOTIFICATION
+        // ========================================
+
         app(CounselorNotificationService::class)
             ->notifyCounselors(
 
@@ -430,12 +465,12 @@ class ScheduleController extends Controller
                 'Konsultasi telah selesai',
 
                 'Sesi konsultasi untuk tiket '
-                . $consultation->consultationRequest->ticket_number
+                . ($student?->ticket_number ?? '-')
                 . ' telah diselesaikan.',
 
                 route(
                     'admin.consultations.show',
-                    $consultation->consultationRequest,
+                    $student,
                     false
                 ),
 
@@ -444,12 +479,174 @@ class ScheduleController extends Controller
             );
 
 
+        // ========================================
+        // WF-04: FEEDBACK INVITATION
+        // ========================================
+
+        $feedbackWebhookUrl = config(
+            'services.n8n.feedback_webhook_url'
+        );
+
+
+        // Validate student email
+        if (!$student || blank($student->email)) {
+
+            Log::warning(
+                'WF-04 skipped: Student email is missing.',
+                [
+                    'consultation_id' => $consultation->id,
+                ]
+            );
+
+        }
+
+        // Validate webhook URL
+        elseif (blank($feedbackWebhookUrl)) {
+
+            Log::warning(
+                'WF-04 skipped: Feedback webhook URL is missing.',
+                [
+                    'consultation_id' => $consultation->id,
+                ]
+            );
+
+        } else {
+
+            try {
+
+                // ========================================
+                // GENERATE SIGNED FEEDBACK URL
+                // ========================================
+
+                // Link valid for 30 days
+                $expiresAt = now()->addDays(30);
+
+                $feedbackUrl = URL::temporarySignedRoute(
+
+                    'public.feedback.create',
+
+                    $expiresAt,
+
+                    [
+                        'consultation' => $consultation->id,
+                    ]
+
+                );
+
+
+                // ========================================
+                // CREATE FEEDBACK REMINDER TRACKING
+                // ========================================
+
+                $reminderDelivery = FeedbackReminderDelivery::firstOrCreate(
+
+                    [
+                        'consultation_id' => $consultation->id,
+                    ],
+
+                    [
+                        'recipient_email' => $student->email,
+
+                        'recipient_name' => $student->alias ?: 'Mahasiswa',
+
+                        'status' => 'awaiting_invitation',
+                    ]
+
+                );
+
+
+
+                // ========================================
+                // BUILD WEBHOOK PAYLOAD
+                // ========================================
+
+                $payload = [
+
+                    'consultation_id' => $consultation->id,
+
+                    'ticket_number' => $student->ticket_number,
+
+                    'feedback_reminder_delivery_id' => $reminderDelivery->id,
+
+                    'student' => [
+
+                        'display_name' => $student->alias,
+
+                        'email' => $student->email,
+
+                    ],
+
+                    'counselor' => [
+
+                        'name' => $counselor?->name
+                            ?? 'Konselor Sebaya',
+
+                    ],
+
+                    'feedback' => [
+
+                        'url' => $feedbackUrl,
+
+                        'expires_at' => $expiresAt->toIso8601String(),
+
+                    ],
+
+                ];
+
+
+                // ========================================
+                // SEND EVENT TO N8N WF-04
+                // ========================================
+
+                $sent = app(N8nWebhookService::class)->send(
+
+                    'consultation.completed',
+
+                    $payload,
+
+                    $feedbackWebhookUrl
+
+                );
+
+
+                // Record failed dispatch
+                if (!$sent) {
+
+                    Log::warning(
+                        'WF-04 feedback invitation was not dispatched.',
+                        [
+                            'consultation_id' => $consultation->id,
+                            'event_type' => 'consultation.completed',
+                        ]
+                    );
+
+                }
+
+            } catch (\Throwable $exception) {
+
+                // Do not roll back completed consultation
+                Log::error(
+                    'WF-04 feedback invitation failed.',
+                    [
+                        'consultation_id' => $consultation->id,
+                        'error' => $exception->getMessage(),
+                    ]
+                );
+
+            }
+
+        }
+
+        // ========================================
+        // REDIRECT
+        // ========================================
+
         return back()->with(
             'success',
             'Konsultasi berhasil diselesaikan.'
         );
-    }
 
+    }
 
     /**
      * Cancel consultation schedule.
